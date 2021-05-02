@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.businessTopView, name='businessTop'),
     path('music/', views.musicTopView, name='musicTop'),
+
+
 ]
