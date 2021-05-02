@@ -24,5 +24,5 @@ def businessTopView (request):
 
     return render(request, 'business/business.html')
 
-def sendMessage (request):
-    pass
+def musicTopView (request):
+    return render(request, 'music/index.html')
