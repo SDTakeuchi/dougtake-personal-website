@@ -9,7 +9,7 @@ class Album(models.Model):
     landr_url = models.URLField()
     SINGLE = 'Single'
     ALBUM = 'Album'
-    EP = 'Ep'
+    EP = 'EP'
     ALBUM_TYPE_CHOICES = (
         (SINGLE, 'Single'),
         (ALBUM, 'Album'),

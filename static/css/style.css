@@ -1,10 +1,20 @@
+/* ----------business section----------------------- */
+
 .top-pic img {
   margin:54px auto 30px;
   width: 100%;
 }
 
 section {
-  margin-bottom: 78px;
+  padding-top: 78px;
+}
+
+.section-first {
+  padding-top: 48px;
+}
+
+.section-last {
+  padding-bottom: 78px;
 }
 
 .heading {
@@ -30,7 +40,7 @@ section {
   margin-bottom: 8%;
   margin-top: -10%;
   text-align: center;
-  color: #909090;
+  color: #a2a2a2;
 }
 .contact-form .btnContact {
   width: 50%;
