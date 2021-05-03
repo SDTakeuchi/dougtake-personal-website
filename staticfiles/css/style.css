@@ -14,7 +14,6 @@ section {
 .sp-ver{display:none;}
 .pc-ver{display:block;}
 
-
 .contact-form{
   background: #fff;
   margin-top: 10%;
@@ -31,7 +30,7 @@ section {
   margin-bottom: 8%;
   margin-top: -10%;
   text-align: center;
-  color: #0062cc;
+  color: #909090;
 }
 .contact-form .btnContact {
   width: 50%;
@@ -42,6 +41,7 @@ section {
   font-weight: 600;
   color: #fff;
   cursor: pointer;
+  float: right;
 }
 .btnContactSubmit
 {
@@ -104,6 +104,12 @@ section {
   }
 }
 
+@media (max-width: 768px) {
+  .contact-form .btnContact{
+    width: 100%;
+    float: none;
+  }
+}
 
 @media (max-width: 480px) {
   .sp-ver{display:block;}
