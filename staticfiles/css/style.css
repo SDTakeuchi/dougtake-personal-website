@@ -1,3 +1,5 @@
+/* ----------business section----------------------- */
+
 .top-pic img {
   margin:54px auto 30px;
   width: 100%;
@@ -12,7 +14,7 @@ section {
 }
 
 .section-last {
-  margin-bottom: 78px;
+  padding-bottom: 78px;
 }
 
 .heading {
@@ -111,6 +113,15 @@ section {
       visibility:hidden;
   }
 }
+
+/* ----------business section----------------------- */
+
+.artist-font {
+  font-family: 'M+ 1m medium', arial;
+}
+
+
+/* ----------media  section----------------------- */
 
 @media (max-width: 768px) {
   .contact-form .btnContact{
