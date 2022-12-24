@@ -1,4 +1,4 @@
-package model
+package postgres
 
 type Tag struct {
 	ID   uint64
