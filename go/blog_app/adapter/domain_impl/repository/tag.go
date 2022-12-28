@@ -1,28 +1,49 @@
 package repository
 
 import (
+	modelimpl "blog_app/adapter/domain_impl/model"
+	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
 	"blog_app/domain/repository"
-	"blog_app/adapter/persistance/database/postgres"
-	modelimpl "blog_app/adapter/domain_impl/model"
 	"context"
+
+	"github.com/jinzhu/gorm"
 )
 
-type tagImpl struct{}
+type tagImpl struct {
+	db *gorm.DB
+}
 
-func NewTagImpl() repository.Tag {
-	return &tagImpl{}
+func NewTagImpl(db *gorm.DB) repository.Tag {
+	return &tagImpl{db: db}
 }
 
 func (r *tagImpl) Create(ctx context.Context, tag model.Tag) (model.Tag, error) {
-	var record = modelimpl.TagToRecord(tag)
+	record := modelimpl.TagToRecord(tag)
+	if err := r.db.Create(&record).Error; err != nil {
+		return nil, err
+	}
 	return modelimpl.TagFromRecord(record), nil
 }
 
-func (r *tagImpl) Find(ctx context.Context) ([]model.Tag, error) {
-	var records = []postgres.Tag{}
+func (r *tagImpl) Find(ctx context.Context, ids []uint64) ([]model.Tag, error) {
+	records := []postgres.Tag{}
 
-	var models = make([]model.Tag, len(records))
+	q := r.db.Order("name")
+
+	if len(ids) > 0 {
+		// surround "?" when using IN query
+		q = q.Where("id IN (?)", ids)
+	}
+
+	if err := q.Find(&records).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	models := make([]model.Tag, len(records))
 	for i, v := range records {
 		models[i] = modelimpl.TagFromRecord(v)
 	}
@@ -30,10 +51,17 @@ func (r *tagImpl) Find(ctx context.Context) ([]model.Tag, error) {
 }
 
 func (r *tagImpl) Update(ctx context.Context, tag model.Tag) (model.Tag, error) {
-	var record = modelimpl.TagToRecord(tag)
+	record := modelimpl.TagToRecord(tag)
+	if err := r.db.Update(&record).Error; err != nil {
+		return nil, err
+	}
 	return modelimpl.TagFromRecord(record), nil
 }
 
 func (r *tagImpl) Delete(ctx context.Context, id uint64) error {
-	return nil
+	record := postgres.Tag{}
+	if err := r.db.Take(&record, id).Error; err != nil {
+		return err
+	}
+	return r.db.Delete(&record).Error
 }

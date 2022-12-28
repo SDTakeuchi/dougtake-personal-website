@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"gorm.io/gorm"
-)
+	"github.com/pingcap/log"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+) 
 
 var (
 	connOnce sync.Once
@@ -29,8 +31,31 @@ func ConnectDB() *DB {
 func newConnection() *gorm.DB {
 	dsn := buildDNS()
 	conf := config.Get().DB
-	isDebug := conf.Debug
-	
+	// isDebug := conf.Debug
+
+	// var logLevel logger.LogLevel
+	// if isDebug {
+	// 	logLevel = logger.Info
+	// } else {
+	// 	logLevel = logger.Warn
+	// }
+
+	// gl := logger.Default.LogMode(logLevel)
+	db, err := gorm.Open("postgres", dsn)
+	if err != nil {
+		log.Error(err.Error())
+		panic(err)
+	}
+
+	sql := db.DB()
+	if err != nil {
+		log.Error(err.Error())
+		panic(err)
+	}
+	sql.SetConnMaxOpenConns(conf.MaxOpen)
+	sql.SetConnMaxIdleConns(conf.MaxIdle)
+	sql.SetConnMaxLifetime(conf.MaxLifeTime)
+	return sql
 }
 
 func buildDNS() string {
