@@ -54,7 +54,7 @@ func (r postRepository) Find(
 		q = q.Where("title LIKE ?", "%"+searchChar+"%")
 	}
 
-	if err := q.Offset(offset).Limit(limit).Find(posts).Error; err != nil  {
+	if err := q.Offset(offset).Limit(limit).Find(&posts).Error; err != nil  {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
