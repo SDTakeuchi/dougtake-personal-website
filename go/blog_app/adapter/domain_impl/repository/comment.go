@@ -14,14 +14,14 @@ type commentRepository struct {
 }
 
 func NewCommentRepository(db *gorm.DB) repository.Comment {
-	return commentRepository{db}
+	return &commentRepository{db}
 }
 
-func (r commentRepository) Create(ctx context.Context, comment model.Comment) (model.Comment, error) {
+func (r *commentRepository) Create(ctx context.Context, comment model.Comment) (model.Comment, error) {
 	return nil, nil
 }
 
-func (r commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
+func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
 	var comments []postgres.Comment
 
 	if err := r.db.Order("created_at").Find(&comments).Error; err != nil  {
@@ -39,10 +39,10 @@ func (r commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]m
 	return mComments, nil
 }
 
-func (r commentRepository) Update(ctx context.Context, comment model.Comment) (model.Comment, error) {
+func (r *commentRepository) Update(ctx context.Context, comment model.Comment) (model.Comment, error) {
 	return nil, nil
 }
 
-func (r commentRepository) Delete(ctx context.Context, id uint64) error {
+func (r *commentRepository) Delete(ctx context.Context, id uint64) error {
 	return nil
 }

@@ -14,16 +14,16 @@ type postRepository struct {
 }
 
 func NewPostRepository(db *gorm.DB) repository.Post {
-	return postRepository{db}
+	return &postRepository{db}
 }
 
 const PostsMaxResponseSize = 10
 
-func (r postRepository) Create(ctx context.Context, post model.Post) (model.Post, error) {
+func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Post, error) {
 	return nil, nil
 }
 
-func (r postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
+func (r *postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
 	var post postgres.Post
 	if err := r.db.Take(&post, id).Error; err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func (r postRepository) Get(ctx context.Context, id uint64) (model.Post, error) 
 	return modelimpl.PostFromRecord(post), nil
 }
 
-func (r postRepository) Find(
+func (r *postRepository) Find(
 	ctx context.Context,
 	tagID uint64,
 	searchChar string,
@@ -69,10 +69,10 @@ func (r postRepository) Find(
 	return mPosts, nil
 }
 
-func (r postRepository) Update(ctx context.Context, post model.Post) (model.Post, error) {
+func (r *postRepository) Update(ctx context.Context, post model.Post) (model.Post, error) {
 	return nil, nil
 }
 
-func (r postRepository) Delete(ctx context.Context, id uint64) error {
+func (r *postRepository) Delete(ctx context.Context, id uint64) error {
 	return nil
 }
