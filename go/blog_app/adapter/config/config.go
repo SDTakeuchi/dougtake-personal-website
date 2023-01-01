@@ -23,10 +23,12 @@ type (
 		// set values that can be read by time.ParseDuration()
 		MaxLifeTime time.Duration `required:"true" envconfig:"DB_MAX_LIFE_TIME" default:"0"`
 	}
+
 	Frontend struct {
 		HostName string `required:"true" envconfig:"FRONTEND_HOST_NAME"`
 		Port     string `required:"true" envconfig:"FRONTEND_PORT" default:"8000"`
 	}
+
 	Config struct {
 		DB       DB
 		Frontend Frontend

@@ -32,7 +32,7 @@ func (r *tagImpl) Find(ctx context.Context, ids []uint64) ([]model.Tag, error) {
 	q := r.db.Order("name")
 
 	if len(ids) > 0 {
-		// surround "?" when using IN query
+		// TIPS: surround "?" when using IN query
 		q = q.Where("id IN (?)", ids)
 	}
 

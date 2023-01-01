@@ -13,6 +13,7 @@ type (
 	}
 	FindPostsInput struct {
 		ID         uint64
+		TagID      uint64
 		SearchChar string
 		Offset     uint64
 		Limit      uint64
@@ -72,7 +73,7 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		}
 		mPosts = append(mPosts, post)
 	} else {
-		posts, err := u.postRepo.Find(ctx, input.SearchChar, input.Offset, input.Limit)
+		posts, err := u.postRepo.Find(ctx, input.TagID, input.SearchChar, input.Offset, input.Limit)
 		if err != nil {
 			return nil, err
 		}

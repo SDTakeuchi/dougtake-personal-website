@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/google/uuid"
+	"blog_app/domain/model/uuid"
 	"time"
 )
 
