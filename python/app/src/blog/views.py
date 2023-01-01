@@ -10,15 +10,17 @@ def post_detail(request):
 
 def create_post(request):
     ctx = {}
-    return render(request, 'form.html', ctx)
+    return render(request, 'post_form.html', ctx)
 
 def update_post(request):
     ctx = {}
-    return render(request, 'form.html', ctx)
+    return render(request, 'post_form.html', ctx)
 
-def signup(request):
-    ctx = {}
-    return render(request, 'signup.html', ctx)
+# user
+
+# def signup(request):
+#     ctx = {}
+#     return render(request, 'signup.html', ctx)
 
 def login(request):
     ctx = {}

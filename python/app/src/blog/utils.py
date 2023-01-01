@@ -1,4 +1,6 @@
 def is_empty(v) -> bool:
-    if len(v) == 0 or v is None:
-        return True
-    return False
+    return \
+        v == 0 or \
+        v == '' or \
+        v is None or \
+        len(v) == 0

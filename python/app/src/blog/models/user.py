@@ -1,12 +1,18 @@
 from django.db import models
 from dataclasses import dataclass
 import datetime
-import uuid
+import utils
 
 @dataclass
 class User:
-    id: uuid.UUID
+    user_id: str
     name: str
+
+    @staticmethod
+    def new(user_id: str = '', name: str = ''):
+        if utils.is_empty(name):
+            raise Exception('user name must not be empty')
+        return User(user_id, name)
 
     def signup(self, name, password):
         return 

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/pingcap/log"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-) 
+	"github.com/pingcap/log"
+)
 
 var (
 	connOnce sync.Once
@@ -47,15 +47,10 @@ func newConnection() *gorm.DB {
 		panic(err)
 	}
 
-	sql := db.DB()
-	if err != nil {
-		log.Error(err.Error())
-		panic(err)
-	}
-	sql.SetConnMaxOpenConns(conf.MaxOpen)
-	sql.SetConnMaxIdleConns(conf.MaxIdle)
-	sql.SetConnMaxLifetime(conf.MaxLifeTime)
-	return sql
+	db.DB().SetMaxOpenConns(conf.MaxOpen)
+	db.DB().SetMaxIdleConns(conf.MaxIdle)
+	db.DB().SetConnMaxLifetime(conf.MaxLifeTime)
+	return db
 }
 
 func buildDNS() string {
