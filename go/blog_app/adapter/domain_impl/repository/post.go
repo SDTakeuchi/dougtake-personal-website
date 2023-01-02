@@ -1,11 +1,12 @@
 package repository
 
 import (
-	"blog_app/domain/model"
-	"blog_app/domain/repository"
 	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/adapter/persistance/database/postgres"
+	"blog_app/domain/model"
+	"blog_app/domain/repository"
 	"context"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -44,17 +45,17 @@ func (r *postRepository) Find(
 		limit = PostsMaxResponseSize
 	}
 
-    q := r.db.Order("created_at DESC")
+	q := r.db.Order("created_at DESC")
 
 	if tagID != 0 {
 		q = q.Where("tag_id = ?", tagID)
 	}
 
-	if searchChar!= "" {
+	if searchChar != "" {
 		q = q.Where("title LIKE ?", "%"+searchChar+"%")
 	}
 
-	if err := q.Offset(offset).Limit(limit).Find(&posts).Error; err != nil  {
+	if err := q.Offset(offset).Limit(limit).Find(&posts).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}

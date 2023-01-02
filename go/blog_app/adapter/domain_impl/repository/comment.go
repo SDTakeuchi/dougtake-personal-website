@@ -1,11 +1,12 @@
 package repository
 
 import (
-	"blog_app/domain/model"
-	"blog_app/domain/repository"
 	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/adapter/persistance/database/postgres"
+	"blog_app/domain/model"
+	"blog_app/domain/repository"
 	"context"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -24,7 +25,7 @@ func (r *commentRepository) Create(ctx context.Context, comment model.Comment) (
 func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
 	var comments []postgres.Comment
 
-	if err := r.db.Order("created_at").Find(&comments).Error; err != nil  {
+	if err := r.db.Order("created_at").Find(&comments).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
