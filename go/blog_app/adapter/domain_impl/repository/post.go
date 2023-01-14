@@ -26,7 +26,7 @@ func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Pos
 
 func (r *postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
 	var post postgres.Post
-	if err := r.db.Take(&post, id).Error; err != nil {
+	if err := r.db.WithContext(ctx).Take(&post, id).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.PostFromRecord(post), nil
@@ -45,7 +45,7 @@ func (r *postRepository) Find(
 		limit = PostsMaxResponseSize
 	}
 
-	q := r.db.Order("created_at DESC")
+	q := r.db.WithContext(ctx).Order("created_at DESC")
 
 	if tagID != 0 {
 		q = q.Where("tag_id = ?", tagID)
@@ -55,7 +55,7 @@ func (r *postRepository) Find(
 		q = q.Where("title LIKE ?", "%"+searchChar+"%")
 	}
 
-	if err := q.Offset(offset).Limit(limit).Find(&posts).Error; err != nil {
+	if err := q.Offset(int(offset)).Limit(int(limit)).Find(&posts).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}

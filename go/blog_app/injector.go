@@ -6,9 +6,15 @@ import "github.com/google/wire"
 
 func InitializeEvent() Event {
 	wire.Build(
-		//tag
-		NewGreeter,
-		NewMessage
+		// user
+		// tag
+		repository.NewTagRepository,
+		// comment
+		repository.NewCommentRepository,
+		// post
+		repository.NewPostRepository,
+		usecase.NewFindPosts,
+		NewPostHandler,
 	)
 	return Event{}
 }
