@@ -5,7 +5,7 @@ import (
 	"blog_app/usecase"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type GetPostsProvider struct {
