@@ -8,10 +8,11 @@ import (
 
 type (
 	CreateComment interface {
-		Execute(ctx context.Context, input CreateCommentInput) (CreateCommentOutput, error)
+		Execute(ctx context.Context, input CreateCommentInput) (*CreateCommentOutput, error)
 	}
 	CreateCommentInput struct {
-		body string
+		PostID uint64
+		Body   string
 	}
 	CreateCommentOutput struct {
 		comment model.Comment
@@ -22,10 +23,12 @@ type (
 )
 
 func NewCreateComment(repository repository.Comment) CreateComment {
-	retrun & createCommentImpl{repository: repository}
+	return &createCommentImpl{repository: repository}
 }
 
-func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInput) (CreateCommentOutput, error) {
-	var model model.Comment
-	return CreateCommentOutput{model}, nil
+func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInput) (*CreateCommentOutput, error) {
+	var mComment model.Comment
+
+	// u.repository.Create(ctx, postID, )
+	return &CreateCommentOutput{mComment}, nil
 }

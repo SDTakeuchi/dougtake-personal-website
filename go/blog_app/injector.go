@@ -2,7 +2,13 @@
 
 package main
 
-import "github.com/google/wire"
+import (
+	"blog_app/adapter/handler"
+	"blog_app/domain/repository"
+	"blog_app/usecase"
+
+	"github.com/google/wire"
+)
 
 func InitializeEvent() Event {
 	wire.Build(
@@ -14,7 +20,7 @@ func InitializeEvent() Event {
 		// post
 		repository.NewPostRepository,
 		usecase.NewFindPosts,
-		NewPostHandler,
+		handler.NewPostHandler,
 	)
 	return Event{}
 }

@@ -52,7 +52,7 @@ func (r *tagImpl) Find(ctx context.Context, ids []uint64) ([]model.Tag, error) {
 
 func (r *tagImpl) Update(ctx context.Context, tag model.Tag) (model.Tag, error) {
 	record := modelimpl.TagToRecord(tag)
-	if err := r.db.Update(&record).Error; err != nil {
+	if err := r.db.Updates(&record).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.TagFromRecord(record), nil

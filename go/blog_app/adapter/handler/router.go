@@ -1,6 +1,12 @@
 package server
 
-// setup router
+import "github.com/gin-gonic/gin"
+
+func router(app *gin.Engine) {
+	var (
+		
+	)
+}
 
 //func InitRouting(e *echo.Echo, tagProvider tagProvider) {
 //	g := e.Group("/api")

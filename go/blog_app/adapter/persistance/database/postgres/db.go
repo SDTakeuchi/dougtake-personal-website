@@ -64,7 +64,7 @@ func newConnection() *gorm.DB {
 func buildDNS() string {
 	conf := config.Get().DB
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s sslmode=%s password=%s connect_timeout=%s",
+		"host=%s port=%s user=%s dbname=%s sslmode=%s password=%s connect_timeout=%d",
 		conf.HostName,
 		conf.Port,
 		conf.UserName,

@@ -98,13 +98,13 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		}
 
 		//get comments
-		mComment, err := u.commentRepo.FindByPostID(ctx, p.ID())
+		mComments, err := u.commentRepo.FindByPostID(ctx, p.ID())
 		if err != nil {
 			return nil, err
 		}
 
 		var comments []commentOutput
-		for _, c := range mComment {
+		for _, c := range mComments {
 			comments = append(
 				comments,
 				commentOutput{
