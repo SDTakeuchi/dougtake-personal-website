@@ -31,8 +31,8 @@ func ConnectDB() *DB {
 
 func newConnection() *gorm.DB {
 	dsn := buildDNS()
+	isDebug := config.Get().Debug
 	conf := config.Get().DB
-	isDebug := conf.Debug
 
 	var logLevel logger.LogLevel
 	if isDebug {

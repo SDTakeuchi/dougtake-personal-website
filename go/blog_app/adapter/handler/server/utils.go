@@ -31,7 +31,7 @@ func createErrResponse(c *gin.Context, err error) {
 		msg = constants.DefaultErrorMessage
 	}
 
-	isDebug := config.Get().DB.Debug
+	isDebug := config.Get().Debug
 	if isDebug {
 		// logger.Debug(err.Error())
 		res = gin.H{"message": msg.String() + ":" + err.Error()}

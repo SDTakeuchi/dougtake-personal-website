@@ -8,31 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type PostHandler interface {
-	GetPosts(c *gin.Context)
-	// dbConn            *gorm.DB
-	// findPosstsUsecase usecase.FindPosts
-	// tagRepository     repository.Post
-}
-
-type postHandler struct {
-	findPostsUsecase usecase.FindPosts
-	// createPostsUsecase usecase.CreatePosts
-	// updatePostsUsecase usecase.UpdatePosts
-	// deletePostsUsecase usecase.DeletePosts
-}
-
-func NewPostHandler(
-	postRepo repository.Post,
-	tagRepo repository.Tag,
-	commentRepo repository.Comment,
-) PostHandler {
-	return &postHandler{
-		findPostsUsecase: usecase.NewFindPosts(postRepo, tagRepo, commentRepo),
-	}
-}
-
 type (
+	PostHandler interface {
+		GetPosts(c *gin.Context)
+		// dbConn            *gorm.DB
+		// findPosstsUsecase usecase.FindPosts
+		// tagRepository     repository.Post
+	}
+
+	postHandler struct {
+		findPostsUsecase usecase.FindPosts
+		// createPostsUsecase usecase.CreatePosts
+		// updatePostsUsecase usecase.UpdatePosts
+		// deletePostsUsecase usecase.DeletePosts
+	}
+
 	GetPostsRequest struct {
 		ID         uint64 `json:"id"`
 		TagID      uint64 `json:"tag_id"`
@@ -45,6 +35,16 @@ type (
 		Posts usecase.FindPostsOutput `json:"posts"`
 	}
 )
+
+func NewPostHandler(
+	postRepo repository.Post,
+	tagRepo repository.Tag,
+	commentRepo repository.Comment,
+) PostHandler {
+	return &postHandler{
+		findPostsUsecase: usecase.NewFindPosts(postRepo, tagRepo, commentRepo),
+	}
+}
 
 func (p *postHandler) GetPosts(c *gin.Context) {
 	param := GetPostsRequest{}

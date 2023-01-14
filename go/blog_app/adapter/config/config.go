@@ -14,7 +14,6 @@ type (
 		Port        string `required:"true" envconfig:"DB_PORT" default:"5432"`
 		HostName    string `required:"true" envconfig:"DB_HOST_NAME"`
 		SSLMode     string `required:"true" envconfig:"DB_SSL_MODE"`
-		Debug       bool   `required:"true" envconfig:"DB_DEBUG" default:"true"`
 		ConnTimeout int    `required:"true" envconfig:"DB_CONN_TIMEOUT" default:"9"`
 		// 0 means no termination
 		MaxOpen int `required:"true" envconfig:"DB_MAX_OPEN" default:"0"`
@@ -30,6 +29,7 @@ type (
 	}
 
 	Config struct {
+		Debug    bool `required:"true" envconfig:"DEBUG" default:"false"`
 		DB       DB
 		Frontend Frontend
 	}
