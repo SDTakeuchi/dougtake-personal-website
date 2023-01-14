@@ -7,7 +7,7 @@ import (
 	"blog_app/domain/repository"
 	"context"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type tagImpl struct {

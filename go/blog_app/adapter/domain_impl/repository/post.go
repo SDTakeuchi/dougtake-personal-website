@@ -7,8 +7,10 @@ import (
 	"blog_app/domain/repository"
 	"context"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
+
+const PostsMaxResponseSize = 10
 
 type postRepository struct {
 	db *gorm.DB
@@ -17,8 +19,6 @@ type postRepository struct {
 func NewPostRepository(db *gorm.DB) repository.Post {
 	return &postRepository{db}
 }
-
-const PostsMaxResponseSize = 10
 
 func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Post, error) {
 	return nil, nil
