@@ -1,16 +1,19 @@
 //go:build wireinject
+// +build wireinject
 
 package main
 
 import (
+	"blog_app/adapter/domain_impl/repository"
 	"blog_app/adapter/handler"
-	"blog_app/domain/repository"
+	"blog_app/adapter/persistance/database/postgres"
+	"blog_app/adapter/registry"
 	"blog_app/usecase"
 
 	"github.com/google/wire"
 )
 
-func InitializeEvent() Event {
+func initialize(db *postgres.DB) *registry.Registry {
 	wire.Build(
 		// user
 		// tag
@@ -21,6 +24,9 @@ func InitializeEvent() Event {
 		repository.NewPostRepository,
 		usecase.NewFindPosts,
 		handler.NewPostHandler,
+
+		registry.NewRegistry,
 	)
-	return Event{}
+
+	return &registry.Registry{}
 }

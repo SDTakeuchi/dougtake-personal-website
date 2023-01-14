@@ -1,11 +1,20 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"blog_app/adapter/registry"
 
-func router(app *gin.Engine) {
+	"github.com/gin-gonic/gin"
+)
+
+func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	var (
-		
+		postHandler = registry.PostHandler
 	)
+
+	postGroup := engine.Group("/post")
+	{
+		postGroup.GET("", postHandler.GetPosts)
+	}
 }
 
 //func InitRouting(e *echo.Echo, tagProvider tagProvider) {

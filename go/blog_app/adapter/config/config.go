@@ -28,10 +28,15 @@ type (
 		Port     string `required:"true" envconfig:"FRONTEND_PORT" default:"8000"`
 	}
 
+	API struct {
+		Port string `required:"true" envconfig:"GO_PORT" default:"8080"`
+	}
+
 	Config struct {
 		Debug    bool `required:"true" envconfig:"DEBUG" default:"false"`
 		DB       DB
 		Frontend Frontend
+		API      API
 	}
 )
 
