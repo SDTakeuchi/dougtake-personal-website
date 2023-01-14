@@ -1,17 +1,42 @@
 version: "3"
 
 services:
-    db:
-        image: mysql
-        environment:
-            - MYSQL_PASSWORD=password
-    web:
-        build: ./python
-        command:
-            python ./config/manage.py runserver 0.0.0.0:8000
-        volumes:
-            - ./python/:/app/
+    # postgres:
+    #     image: postgres:15-alpine
+    #     container_name: blog_postgres
+    #     environment:
+    #         - POSTGRES_USER=root
+    #         - POSTGRES_PASSWORD=secret
+    #         - POSTGRES_DB=simple_bank
+    #         - TZ="Asia/Tokyo"
+    #     volumes:
+    #         - postgres_data:/var/lib/postgresql/data
+
+    # web:
+    #     build: ./python
+    #     command:
+    #         python ./config/manage.py runserver 0.0.0.0:8000
+    #     volumes:
+    #         - ./python/:/app/
+    #     ports:
+    #         - 8000:8000
+    #     depends_on:
+    #         - db
+
+    api:
+        build:
+            context: ./go
+            target: dev
+        container_name: blog_go_api
+        hostname: blog_go_api
+        # command: ["sh"]
+        tty: true
         ports:
-            - 8000:8000
-        depends_on:
-            - db
+            - "8080:8080"
+        volumes:
+            - ./go/blog_app:/go/src/app
+        # depends_on:
+        #     - postgres
+
+volumes:
+    postgres_data:
