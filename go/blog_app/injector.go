@@ -13,7 +13,7 @@ import (
 	"github.com/google/wire"
 )
 
-func initialize(db *postgres.DB) *registry.Registry {
+func initialize(db *postgres.DB) registry.Registry {
 	wire.Build(
 		// user
 		// tag
@@ -24,9 +24,9 @@ func initialize(db *postgres.DB) *registry.Registry {
 		repository.NewPostRepository,
 		usecase.NewFindPosts,
 		handler.NewPostHandler,
-
+		//registry
 		registry.NewRegistry,
 	)
 
-	return &registry.Registry{}
+	return registry.Registry{}
 }
