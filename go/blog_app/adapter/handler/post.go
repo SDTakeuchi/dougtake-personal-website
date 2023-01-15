@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"blog_app/domain/repository"
-	"blog_app/usecase"
 	"net/http"
+
+	"blog_app/usecase"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,14 +36,8 @@ type (
 	}
 )
 
-func NewPostHandler(
-	postRepo repository.Post,
-	tagRepo repository.Tag,
-	commentRepo repository.Comment,
-) PostHandler {
-	return &postHandler{
-		findPostsUsecase: usecase.NewFindPosts(postRepo, tagRepo, commentRepo),
-	}
+func NewPostHandler(findPostsUsecase usecase.FindPosts) PostHandler {
+	return &postHandler{findPostsUsecase}
 }
 
 func (p *postHandler) GetPosts(c *gin.Context) {

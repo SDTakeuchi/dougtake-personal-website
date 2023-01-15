@@ -6,12 +6,12 @@ import (
 )
 
 type Registry struct {
-	DBConn      postgres.DB
+	DBConn      *postgres.DB
 	PostHandler handler.PostHandler
 }
 
-func NewRegistry(db postgres.DB, postHandler handler.PostHandler) *Registry {
-	return &Registry{
+func NewRegistry(db *postgres.DB, postHandler handler.PostHandler) Registry {
+	return Registry{
 		db,
 		postHandler,
 	}

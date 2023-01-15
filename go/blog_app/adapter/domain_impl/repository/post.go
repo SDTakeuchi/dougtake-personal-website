@@ -13,10 +13,10 @@ import (
 const PostsMaxResponseSize = 10
 
 type postRepository struct {
-	db *gorm.DB
+	db *postgres.DB
 }
 
-func NewPostRepository(db *gorm.DB) repository.Post {
+func NewPostRepository(db *postgres.DB) repository.Post {
 	return &postRepository{db}
 }
 
@@ -26,7 +26,7 @@ func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Pos
 
 func (r *postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
 	var post postgres.Post
-	if err := r.db.WithContext(ctx).Take(&post, id).Error; err != nil {
+	if err := r.db.Conn.WithContext(ctx).Take(&post, id).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.PostFromRecord(post), nil
@@ -45,7 +45,7 @@ func (r *postRepository) Find(
 		limit = PostsMaxResponseSize
 	}
 
-	q := r.db.WithContext(ctx).Order("created_at DESC")
+	q := r.db.Conn.WithContext(ctx).Order("created_at DESC")
 
 	if tagID != 0 {
 		q = q.Where("tag_id = ?", tagID)

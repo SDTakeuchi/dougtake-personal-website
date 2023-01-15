@@ -11,10 +11,10 @@ import (
 )
 
 type commentRepository struct {
-	db *gorm.DB
+	db *postgres.DB
 }
 
-func NewCommentRepository(db *gorm.DB) repository.Comment {
+func NewCommentRepository(db *postgres.DB) repository.Comment {
 	return &commentRepository{db}
 }
 
@@ -25,7 +25,7 @@ func (r *commentRepository) Create(ctx context.Context, comment model.Comment) (
 func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
 	var comments []postgres.Comment
 
-	if err := r.db.Order("created_at").Find(&comments).Error; err != nil {
+	if err := r.db.Conn.Order("created_at").Find(&comments).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}

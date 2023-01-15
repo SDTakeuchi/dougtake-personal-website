@@ -19,7 +19,7 @@ func main() {
 	engine := gin.Default()
 	// DI
 	registry := initialize(db)
-	server.SetupRouter(engine, *registry)
+	server.SetupRouter(engine, registry)
 	// graceful shutdown
 	port := ":" + config.Get().API.Port
 	engine.Run(port)
