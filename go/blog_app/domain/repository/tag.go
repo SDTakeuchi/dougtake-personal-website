@@ -1,4 +1,4 @@
-//go:generate mockgen -source=tag.go -destination=../../adapter/domain_impl/repository/mock/tag.go
+//go:generate mockgen -source=tag.go -destination=mock/tag.go
 package repository
 
 import (

@@ -1,4 +1,4 @@
-//go:generate mockgen -source=user.go -destination=../../adapter/domain_impl/repository/mock/user.go
+//go:generate mockgen -source=user.go -destination=mock/user.go
 package repository
 
 import (

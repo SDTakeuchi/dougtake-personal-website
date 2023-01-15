@@ -1,4 +1,4 @@
-//go:generate mockgen -source=comment.go -destination=../../adapter/domain_impl/repository/mock/comment.go
+//go:generate mockgen -source=comment.go -destination=mock/comment.go
 package repository
 
 import (
