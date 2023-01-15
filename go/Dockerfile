@@ -33,7 +33,11 @@ RUN apk update \
 &&  apk add --no-cache bash gcc musl-dev \
 &&  rm -rf /var/lib/apt/lists/* \
 &&  export GO111MODULE=on \
-&&  go install github.com/google/wire/cmd/wire@latest
+# wire
+&&  go install github.com/google/wire/cmd/wire@latest \
+# mockgen
+&&  go install github.com/golang/mock/mockgen@latest \
+&&  go install github.com/golang/mock/gomock@latest
 
 COPY ./blog_app/ .
 COPY ./blog_app/.env .
