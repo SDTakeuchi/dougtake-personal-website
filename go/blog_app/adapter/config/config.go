@@ -2,6 +2,7 @@ package config
 
 import (
 	"time"
+	"log"
 
 	"github.com/kelseyhightower/envconfig"
 )
@@ -43,7 +44,12 @@ type (
 var globalConfig Config
 
 func Load() {
-	envconfig.MustProcess("", globalConfig)
+	if err := envconfig.Process("", &globalConfig); err != nil {
+		log.Fatalf(
+			"err: %v, globalConfig: %+v",
+			err.Error(),
+			globalConfig)
+	}
 }
 
 func Get() Config {

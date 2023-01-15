@@ -32,9 +32,11 @@ WORKDIR /go/src/app
 RUN apk update \
 &&  apk add --no-cache bash gcc musl-dev \
 &&  rm -rf /var/lib/apt/lists/* \
-&&  export GO111MODULE=on
+&&  export GO111MODULE=on \
+&&  go install github.com/google/wire/cmd/wire@latest
 
 COPY ./blog_app/ .
+COPY ./blog_app/.env .
 
 RUN go mod tidy
 
