@@ -1,16 +1,17 @@
 version: "3"
 
 services:
-    # postgres:
-    #     image: postgres:15-alpine
-    #     container_name: blog_postgres
-    #     environment:
-    #         - POSTGRES_USER=root
-    #         - POSTGRES_PASSWORD=secret
-    #         - POSTGRES_DB=simple_bank
-    #         - TZ="Asia/Tokyo"
-    #     volumes:
-    #         - postgres_data:/var/lib/postgresql/data
+    postgres:
+        image: postgres:15-alpine
+        container_name: blog_postgres
+        hostname: blog_postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+            - TZ="Asia/Tokyo"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
 
     # front:
     #     build: ./python
@@ -32,6 +33,22 @@ services:
         tty: true
         ports:
             - "8080:8080"
+        environment:
+            - DB_HOST_NAME=blog_postgres
+            - DB_PORT=5432
+            - DB_USER_NAME=postgres
+            - DB_NAME=postgres
+            - DB_PASSWORD=postgres
+            - DB_SSL_MODE=disable
+            - POSTGRES_TIMEZONE=Asia/Tokyo
+            - DB_CONN_TIMEOUT=9
+            - DB_MAX_OPEN=0
+            - DB_MAX_IDLE=2
+            - DB_MAX_LIFE_TIME=0
+            - DEBUG=true
+            - GO_PORT=8080
+            - FRONTEND_HOST_NAME=blog_front
+            - FRONTEND_PORT=8000
         volumes:
             - ./go/blog_app:/go/src/app
         # depends_on:
