@@ -77,9 +77,7 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		if err != nil {
 			return nil, err
 		}
-		for _, p := range posts {
-			mPosts = append(mPosts, p)
-		}
+		mPosts = append(mPosts, posts...)
 	}
 
 	for _, p := range mPosts {
@@ -93,7 +91,10 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		for _, t := range mTags {
 			tags = append(
 				tags,
-				tagOutput{t.ID(), t.Name()},
+				tagOutput{
+					t.ID(),
+					t.Name(),
+				},
 			)
 		}
 
