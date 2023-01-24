@@ -14,6 +14,6 @@ server:
 
 test:
 	go test -v -cover ./...
-	
+
 git:
 	git add . && git commit -m "$(ARG)" && git push
