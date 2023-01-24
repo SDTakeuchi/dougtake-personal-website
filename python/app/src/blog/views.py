@@ -8,13 +8,13 @@ def post_detail(request):
     ctx = {}
     return render(request, 'detail.html', ctx)
 
-def create_post(request):
-    ctx = {}
-    return render(request, 'post_form.html', ctx)
+# def create_post(request):
+#     ctx = {}
+#     return render(request, 'post_form.html', ctx)
 
-def update_post(request):
-    ctx = {}
-    return render(request, 'post_form.html', ctx)
+# def update_post(request):
+#     ctx = {}
+#     return render(request, 'post_form.html', ctx)
 
 # user
 
@@ -22,6 +22,6 @@ def update_post(request):
 #     ctx = {}
 #     return render(request, 'signup.html', ctx)
 
-def login(request):
-    ctx = {}
-    return render(request, 'login.html', ctx)
+# def login(request):
+#     ctx = {}
+#     return render(request, 'login.html', ctx)
