@@ -6,6 +6,7 @@ import (
 	"blog_app/domain/model"
 	"blog_app/domain/repository"
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -21,7 +22,14 @@ func NewPostRepository(db *postgres.DB) repository.Post {
 }
 
 func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Post, error) {
-	return nil, nil
+	pPost := modelimpl.PostToRecord(post)
+	now := time.Now()
+	pPost.CreatedAt = now
+	pPost.UpdatedAt = now
+	if err := r.db.Conn.WithContext(ctx).Create(&pPost).Error; err != nil {
+		return nil, err
+	}
+	return modelimpl.PostFromRecord(pPost), nil
 }
 
 func (r *postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
@@ -52,7 +60,7 @@ func (r *postRepository) Find(
 	}
 
 	if searchChar != "" {
-		param := "%"+searchChar+"%"
+		param := "%" + searchChar + "%"
 		q = q.Where("body LIKE ?", param)
 	}
 
@@ -72,9 +80,14 @@ func (r *postRepository) Find(
 }
 
 func (r *postRepository) Update(ctx context.Context, post model.Post) (model.Post, error) {
-	return nil, nil
+	pPost := modelimpl.PostToRecord(post)
+	// pPost.UpdatedAt gets updated by defalt by Gorm
+	if err := r.db.Conn.WithContext(ctx).Save(&pPost).Error; err != nil {
+		return nil, err
+	}
+	return modelimpl.PostFromRecord(pPost), nil
 }
 
 func (r *postRepository) Delete(ctx context.Context, id uint64) error {
-	return nil
+	return r.db.Conn.WithContext(ctx).Delete(&postgres.Post{}, id).Error
 }

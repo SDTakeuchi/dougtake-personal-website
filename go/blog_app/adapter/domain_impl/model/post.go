@@ -13,8 +13,8 @@ type post struct {
 	body      string
 	userID    uuid.UUID
 	tagIDs    []uint64
-	createdAt time.Time
-	updatedAt time.Time
+	createdAt time.Time `gorm:"autoCreateTime"`
+	updatedAt time.Time `gorm:"autoCreateTime"`
 }
 
 func (p *post) ID() uint64 { return p.id }
