@@ -236,7 +236,7 @@ func genRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
 		p := postgres.Post{
 			ID: uint64(i),
 			Title: genRandomChars(30),
-			Body: genRandomChars(400),
+			Body: genRandomChars(2000),
 			UserID: uuid.New(),
 			TagIDs: tagIDs,
 			CreatedAt: time.Now(),
@@ -270,7 +270,7 @@ func genRandomComments(wantCount int, postIDs []uint64) []model.Comment {
 
 		c := postgres.Comment{
 			ID: uint64(i),
-			Body: genRandomChars(150),
+			Body: genRandomChars(200),
 			PostID: uint64(postID),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
