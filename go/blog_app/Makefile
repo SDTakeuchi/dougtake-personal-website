@@ -16,4 +16,4 @@ test:
 	go test -v -cover ./...
 
 git:
-	git add . && git commit -m "$(ARG)" && git push
+	git add . && git commit -m "fix find posts usecase" && git push

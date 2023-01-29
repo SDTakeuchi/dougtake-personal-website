@@ -71,11 +71,17 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		if err != nil {
 			return nil, err
 		}
+		if post == nil {
+			return nil, nil
+		}
 		mPosts = append(mPosts, post)
 	} else {
 		posts, err := u.postRepo.Find(ctx, input.TagID, input.SearchChar, input.Offset, input.Limit)
 		if err != nil {
 			return nil, err
+		}
+		if posts == nil {
+			return nil, nil
 		}
 		mPosts = append(mPosts, posts...)
 	}

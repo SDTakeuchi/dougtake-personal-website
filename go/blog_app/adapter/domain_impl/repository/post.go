@@ -52,7 +52,8 @@ func (r *postRepository) Find(
 	}
 
 	if searchChar != "" {
-		q = q.Where("title LIKE ?", "%"+searchChar+"%")
+		param := "%"+searchChar+"%"
+		q = q.Where("body LIKE ?", param)
 	}
 
 	if err := q.Offset(int(offset)).Limit(int(limit)).Find(&posts).Error; err != nil {

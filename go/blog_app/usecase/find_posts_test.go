@@ -15,28 +15,6 @@ import (
 	"github.com/golang/mock/gomock"
 )
 
-// func TestNewFindPosts(t *testing.T) {
-// 	type args struct {
-// 		postRepo    repository.Post
-// 		tagRepo     repository.Tag
-// 		commentRepo repository.Comment
-// 	}
-// 	tests := []struct {
-// 		name string
-// 		args args
-// 		want FindPosts
-// 	}{
-// 		// TODO: Add test cases.
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			if got := NewFindPosts(tt.args.postRepo, tt.args.tagRepo, tt.args.commentRepo); !reflect.DeepEqual(got, tt.want) {
-// 				t.Errorf("NewFindPosts() = %v, want %v", got, tt.want)
-// 			}
-// 		})
-// 	}
-// }
-
 func Test_findPostsImpl_Execute(t *testing.T) {
 	type args struct {
 		ctx   context.Context
@@ -73,7 +51,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 		wantErr           bool
 	}{
 		{
-			"success/ get 1 post",
+			"success/get-1-post-by-id",
 			args{
 				context.Background(),
 				FindPostsInput{ID: postIDs[0]},
@@ -130,6 +108,97 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 			},
 			false,
 		},
+		{
+			"success/get-1-post-by-search",
+			args{
+				context.Background(),
+				FindPostsInput{SearchChar: randomPosts[1].Body()[1:100]},
+			},
+			func(mockPost *mockrepo.MockPost) {
+				mockPost.EXPECT().
+					Find(
+						gomock.Any(),
+						gomock.Any(),
+						gomock.Eq(randomPosts[0].ID()),
+						gomock.Any(),
+						gomock.Any(),
+					).
+					Times(1).
+					Return(randomPosts[1], nil)
+			},
+			func(mockTag *mockrepo.MockTag) {
+				mockTag.EXPECT().
+					Find(gomock.Any(), gomock.Eq(randomPosts[0].TagIDs())).
+					Times(1).
+					Return(randomTags, nil)
+			},
+			func(mockComment *mockrepo.MockComment) {
+				mockComment.EXPECT().
+					FindByPostID(gomock.Any(), gomock.Eq(randomPosts[0].ID())).
+					Times(1).
+					Return(
+						[]model.Comment{randomComments[0]},
+						nil,
+					)
+			},
+			&FindPostsOutput{
+				[]postOutput{
+					{
+						randomPosts[0].ID(),
+						randomPosts[0].Title(),
+						randomPosts[0].Body(),
+						randomPosts[0].CreatedAt(),
+						randomPosts[0].UpdatedAt(),
+						[]tagOutput{
+							{
+								randomTags[0].ID(),
+								randomTags[0].Name(),
+							},
+							{
+								randomTags[1].ID(),
+								randomTags[1].Name(),
+							},
+						},
+						[]commentOutput{
+							{
+								randomComments[0].ID(),
+								randomComments[0].Body(),
+								randomComments[0].CreatedAt(),
+								randomComments[0].UpdatedAt(),
+							},
+						},
+					},
+				},
+			},
+			false,
+		},
+		{
+			"fail/get-no-post-by-id",
+			args{
+				context.Background(),
+				FindPostsInput{ID: uint64(100000)},
+			},
+			func(mockPost *mockrepo.MockPost) {
+				mockPost.EXPECT().
+					Get(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(nil, nil)
+			},
+			func(mockTag *mockrepo.MockTag) {
+				mockTag.EXPECT().
+					Find(gomock.Any(), gomock.Any()).
+					Times(0).
+					Return(nil, nil)
+			},
+			func(mockComment *mockrepo.MockComment) {
+				mockComment.EXPECT().
+					FindByPostID(gomock.Any(), gomock.Any()).
+					Times(0).
+					Return(nil, nil)
+			},
+			nil,
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -165,13 +234,13 @@ func genRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
 	var posts []model.Post
 	for i := 1; i < wantCount+1; i++ {
 		p := postgres.Post{
-			uint64(i),
-			genRandomChars(30),
-			genRandomChars(400),
-			uuid.New(),
-			tagIDs,
-			time.Now(),
-			time.Now(),
+			ID: uint64(i),
+			Title: genRandomChars(30),
+			Body: genRandomChars(400),
+			UserID: uuid.New(),
+			TagIDs: tagIDs,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
 		}
 		posts = append(posts, modelimpl.PostFromRecord(p))
 	}
@@ -182,8 +251,8 @@ func genRandomTags(wantCount int) []model.Tag {
 	var tags []model.Tag
 	for i := 1; i < wantCount+1; i++ {
 		t := postgres.Tag{
-			uint64(i),
-			genRandomChars(10),
+			ID: uint64(i),
+			Name: genRandomChars(10),
 		}
 		tags = append(tags, modelimpl.TagFromRecord(t))
 	}
@@ -200,11 +269,11 @@ func genRandomComments(wantCount int, postIDs []uint64) []model.Comment {
 		}
 
 		c := postgres.Comment{
-			uint64(i),
-			genRandomChars(150),
-			uint64(postID),
-			time.Now(),
-			time.Now(),
+			ID: uint64(i),
+			Body: genRandomChars(150),
+			PostID: uint64(postID),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
 		}
 		comments = append(comments, modelimpl.CommentFromRecord(c))
 	}
