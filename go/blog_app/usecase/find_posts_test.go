@@ -112,43 +112,43 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 			"success/get-1-post-by-search",
 			args{
 				context.Background(),
-				FindPostsInput{SearchChar: randomPosts[1].Body()[1:100]},
+				FindPostsInput{SearchChar: randomPosts[1].Body()[0:100]},
 			},
 			func(mockPost *mockrepo.MockPost) {
 				mockPost.EXPECT().
 					Find(
 						gomock.Any(),
 						gomock.Any(),
-						gomock.Eq(randomPosts[0].ID()),
+						gomock.Eq(randomPosts[1].Body()[0:100]),
 						gomock.Any(),
 						gomock.Any(),
 					).
 					Times(1).
-					Return(randomPosts[1], nil)
+					Return([]model.Post{randomPosts[1]}, nil)
 			},
 			func(mockTag *mockrepo.MockTag) {
 				mockTag.EXPECT().
-					Find(gomock.Any(), gomock.Eq(randomPosts[0].TagIDs())).
+					Find(gomock.Any(), gomock.Eq(randomPosts[1].TagIDs())).
 					Times(1).
 					Return(randomTags, nil)
 			},
 			func(mockComment *mockrepo.MockComment) {
 				mockComment.EXPECT().
-					FindByPostID(gomock.Any(), gomock.Eq(randomPosts[0].ID())).
+					FindByPostID(gomock.Any(), gomock.Eq(randomPosts[1].ID())).
 					Times(1).
 					Return(
-						[]model.Comment{randomComments[0]},
+						[]model.Comment{randomComments[2]},
 						nil,
 					)
 			},
 			&FindPostsOutput{
 				[]postOutput{
 					{
-						randomPosts[0].ID(),
-						randomPosts[0].Title(),
-						randomPosts[0].Body(),
-						randomPosts[0].CreatedAt(),
-						randomPosts[0].UpdatedAt(),
+						randomPosts[1].ID(),
+						randomPosts[1].Title(),
+						randomPosts[1].Body(),
+						randomPosts[1].CreatedAt(),
+						randomPosts[1].UpdatedAt(),
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -161,10 +161,10 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						},
 						[]commentOutput{
 							{
-								randomComments[0].ID(),
-								randomComments[0].Body(),
-								randomComments[0].CreatedAt(),
-								randomComments[0].UpdatedAt(),
+								randomComments[2].ID(),
+								randomComments[2].Body(),
+								randomComments[2].CreatedAt(),
+								randomComments[2].UpdatedAt(),
 							},
 						},
 					},
@@ -220,11 +220,11 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 
 			got, err := usecaseImpl.Execute(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("findPostsImpl.Execute() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("findPostsImpl.Execute() error = %+v, wantErr %+v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("findPostsImpl.Execute() = %v, want %v", got, tt.want)
+				t.Errorf("findPostsImpl.Execute() = %+v, want %+v", got, tt.want)
 			}
 		})
 	}
