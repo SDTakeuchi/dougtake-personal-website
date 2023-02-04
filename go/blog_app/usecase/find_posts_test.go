@@ -42,7 +42,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 	randomComments := genRandomComments(4, postIDs)
 
 	tests := []struct {
-		name string
+		name              string
 		args              args
 		buildStubsPost    func(mockPost *mockrepo.MockPost)
 		buildStubsTag     func(mockTag *mockrepo.MockTag)
@@ -54,13 +54,79 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 			"success/get-1-post-by-id",
 			args{
 				context.Background(),
-				FindPostsInput{ID: postIDs[0]},
+				FindPostsInput{ID: postIDs[1]},
 			},
 			func(mockPost *mockrepo.MockPost) {
 				mockPost.EXPECT().
-					Get(gomock.Any(), gomock.Eq(randomPosts[0].ID())).
+					Get(gomock.Any(), gomock.Eq(randomPosts[1].ID())).
 					Times(1).
-					Return(randomPosts[0], nil)
+					Return(randomPosts[1], nil)
+			},
+			func(mockTag *mockrepo.MockTag) {
+				mockTag.EXPECT().
+					Find(gomock.Any(), gomock.Eq(randomPosts[1].TagIDs())).
+					Times(1).
+					Return(randomTags, nil)
+			},
+			func(mockComment *mockrepo.MockComment) {
+				mockComment.EXPECT().
+					FindByPostID(gomock.Any(), gomock.Eq(randomPosts[1].ID())).
+					Times(1).
+					Return(
+						[]model.Comment{randomComments[2]},
+						nil,
+					)
+			},
+			&FindPostsOutput{
+				[]postOutput{
+					{
+						randomPosts[1].ID(),
+						randomPosts[1].Title(),
+						randomPosts[1].Body(),
+						randomPosts[1].CreatedAt(),
+						randomPosts[1].UpdatedAt(),
+						[]tagOutput{
+							{
+								randomTags[0].ID(),
+								randomTags[0].Name(),
+							},
+							{
+								randomTags[1].ID(),
+								randomTags[1].Name(),
+							},
+						},
+						[]commentOutput{
+							{
+								randomComments[2].ID(),
+								randomComments[2].Body(),
+								randomComments[2].CreatedAt(),
+								randomComments[2].UpdatedAt(),
+							},
+						},
+					},
+				},
+				// searching by id do not return next post index.
+				0,
+			},
+			false,
+		},
+		{
+			"success/get-1-post-by-search",
+			args{
+				context.Background(),
+				FindPostsInput{SearchChar: randomPosts[0].Body()[0:100]},
+			},
+			func(mockPost *mockrepo.MockPost) {
+				mockPost.EXPECT().
+					Find(
+						gomock.Any(),
+						gomock.Any(),
+						gomock.Eq(randomPosts[0].Body()[0:100]),
+						gomock.Any(),
+						gomock.Any(),
+					).
+					Times(1).
+					Return([]model.Post{randomPosts[0]}, nil)
 			},
 			func(mockTag *mockrepo.MockTag) {
 				mockTag.EXPECT().
@@ -105,21 +171,87 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						},
 					},
 				},
+				0,
 			},
 			false,
 		},
 		{
-			"success/get-1-post-by-search",
+			"success/get-1-post-by-tag-and-with-limit",
 			args{
 				context.Background(),
-				FindPostsInput{SearchChar: randomPosts[1].Body()[0:100]},
+				FindPostsInput{TagID: randomTags[0].ID(), Limit: 1},
 			},
 			func(mockPost *mockrepo.MockPost) {
 				mockPost.EXPECT().
 					Find(
 						gomock.Any(),
+						randomTags[0].ID(),
 						gomock.Any(),
-						gomock.Eq(randomPosts[1].Body()[0:100]),
+						gomock.Any(),
+						gomock.Any(),
+					).
+					Times(1).
+					Return([]model.Post{randomPosts[0], randomPosts[1]}, nil)
+			},
+			func(mockTag *mockrepo.MockTag) {
+				mockTag.EXPECT().
+					Find(gomock.Any(), gomock.Eq(randomPosts[0].TagIDs())).
+					Times(1).
+					Return(randomTags, nil)
+			},
+			func(mockComment *mockrepo.MockComment) {
+				mockComment.EXPECT().
+					FindByPostID(gomock.Any(), gomock.Eq(randomPosts[0].ID())).
+					Times(1).
+					Return(
+						[]model.Comment{randomComments[0]},
+						nil,
+					)
+			},
+			&FindPostsOutput{
+				[]postOutput{
+					{
+						randomPosts[0].ID(),
+						randomPosts[0].Title(),
+						randomPosts[0].Body(),
+						randomPosts[0].CreatedAt(),
+						randomPosts[0].UpdatedAt(),
+						[]tagOutput{
+							{
+								randomTags[0].ID(),
+								randomTags[0].Name(),
+							},
+							{
+								randomTags[1].ID(),
+								randomTags[1].Name(),
+							},
+						},
+						[]commentOutput{
+							{
+								randomComments[0].ID(),
+								randomComments[0].Body(),
+								randomComments[0].CreatedAt(),
+								randomComments[0].UpdatedAt(),
+							},
+						},
+					},
+				},
+				randomPosts[1].ID(),
+			},
+			false,
+		},
+		{
+			"success/get-1-post-by-tag-and-with-offset",
+			args{
+				context.Background(),
+				FindPostsInput{TagID: randomTags[0].ID(), Offset: 1, Limit: 1},
+			},
+			func(mockPost *mockrepo.MockPost) {
+				mockPost.EXPECT().
+					Find(
+						gomock.Any(),
+						randomTags[0].ID(),
+						gomock.Any(),
 						gomock.Any(),
 						gomock.Any(),
 					).
@@ -169,6 +301,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						},
 					},
 				},
+				0,
 			},
 			false,
 		},
@@ -234,11 +367,11 @@ func genRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
 	var posts []model.Post
 	for i := 1; i < wantCount+1; i++ {
 		p := postgres.Post{
-			ID: uint64(i),
-			Title: genRandomChars(30),
-			Body: genRandomChars(2000),
-			UserID: uuid.New(),
-			TagIDs: tagIDs,
+			ID:        uint64(i),
+			Title:     genRandomChars(30),
+			Body:      genRandomChars(2000),
+			UserID:    uuid.New(),
+			TagIDs:    tagIDs,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
@@ -251,7 +384,7 @@ func genRandomTags(wantCount int) []model.Tag {
 	var tags []model.Tag
 	for i := 1; i < wantCount+1; i++ {
 		t := postgres.Tag{
-			ID: uint64(i),
+			ID:   uint64(i),
 			Name: genRandomChars(10),
 		}
 		tags = append(tags, modelimpl.TagFromRecord(t))
@@ -269,9 +402,9 @@ func genRandomComments(wantCount int, postIDs []uint64) []model.Comment {
 		}
 
 		c := postgres.Comment{
-			ID: uint64(i),
-			Body: genRandomChars(200),
-			PostID: uint64(postID),
+			ID:        uint64(i),
+			Body:      genRandomChars(200),
+			PostID:    uint64(postID),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}

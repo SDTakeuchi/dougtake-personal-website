@@ -38,13 +38,19 @@ type (
 		Comments  []commentOutput
 	}
 	FindPostsOutput struct {
-		Posts []postOutput
+		Posts         []postOutput
+		NextPostIndex uint64
 	}
 	findPostsImpl struct {
 		postRepo    repository.Post
 		tagRepo     repository.Tag
 		commentRepo repository.Comment
 	}
+)
+
+const (
+	defaultResponseSize = 10
+	maxResponseSize     = 20
 )
 
 func NewFindPosts(
@@ -61,8 +67,9 @@ func NewFindPosts(
 
 func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*FindPostsOutput, error) {
 	var (
-		mPosts      []model.Post
-		postOutputs []postOutput
+		mPosts        []model.Post
+		postOutputs   []postOutput
+		nextPostIndex uint64
 	)
 
 	// get posts
@@ -76,7 +83,16 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		}
 		mPosts = append(mPosts, post)
 	} else {
-		posts, err := u.postRepo.Find(ctx, input.TagID, input.SearchChar, input.Offset, input.Limit)
+		limit := input.Limit
+		if limit == 0 {
+			limit = defaultResponseSize
+		}
+		if limit > maxResponseSize {
+			limit = maxResponseSize
+		}
+
+		// increment limit to check if there is at least one more page.
+		posts, err := u.postRepo.Find(ctx, input.TagID, input.SearchChar, input.Offset, limit+1)
 		if err != nil {
 			return nil, err
 		}
@@ -84,6 +100,12 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 			return nil, nil
 		}
 		mPosts = append(mPosts, posts...)
+
+		// for pagination
+		if len(mPosts) > int(limit) {
+			nextPostIndex = mPosts[len(mPosts)-1].ID()
+			mPosts = mPosts[:len(mPosts)-1]
+		}
 	}
 
 	for _, p := range mPosts {
@@ -138,5 +160,8 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		)
 	}
 
-	return &FindPostsOutput{postOutputs}, nil
+	return &FindPostsOutput{
+		postOutputs,
+		nextPostIndex,
+	}, nil
 }

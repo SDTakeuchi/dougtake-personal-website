@@ -11,8 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const PostsMaxResponseSize = 10
-
 type postRepository struct {
 	db *postgres.DB
 }
@@ -47,12 +45,6 @@ func (r *postRepository) Find(
 	offset uint64,
 	limit uint64,
 ) ([]model.Post, error) {
-	var posts []postgres.Post
-
-	if limit > PostsMaxResponseSize {
-		limit = PostsMaxResponseSize
-	}
-
 	q := r.db.Conn.WithContext(ctx).Order("created_at DESC")
 
 	if tagID != 0 {
@@ -64,7 +56,8 @@ func (r *postRepository) Find(
 		q = q.Where("body LIKE ?", param)
 	}
 
-	if err := q.Offset(int(offset)).Limit(int(limit)).Find(&posts).Error; err != nil {
+	var pPosts []postgres.Post
+	if err := q.Offset(int(offset)).Limit(int(limit)).Find(&pPosts).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
@@ -72,7 +65,7 @@ func (r *postRepository) Find(
 	}
 
 	var mPosts []model.Post
-	for _, p := range posts {
+	for _, p := range pPosts {
 		mPosts = append(mPosts, modelimpl.PostFromRecord(p))
 	}
 
