@@ -6,6 +6,7 @@ import (
 	"blog_app/usecase"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type (
@@ -55,6 +56,10 @@ func (p *postHandler) GetPosts(c *gin.Context) {
 		Limit:      params.PageSize,
 	})
 	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			createErrResponse(c, err)
+			return
+		}
 		createErrResponse(c, err)
 		return
 	}

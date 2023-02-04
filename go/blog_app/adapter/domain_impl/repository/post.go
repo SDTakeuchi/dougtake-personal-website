@@ -6,7 +6,6 @@ import (
 	"blog_app/domain/model"
 	"blog_app/domain/repository"
 	"context"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -21,9 +20,6 @@ func NewPostRepository(db *postgres.DB) repository.Post {
 
 func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Post, error) {
 	pPost := modelimpl.PostToRecord(post)
-	now := time.Now()
-	pPost.CreatedAt = now
-	pPost.UpdatedAt = now
 	if err := r.db.Conn.WithContext(ctx).Create(&pPost).Error; err != nil {
 		return nil, err
 	}
@@ -56,15 +52,17 @@ func (r *postRepository) Find(
 		q = q.Where("body LIKE ?", param)
 	}
 
-	var pPosts []postgres.Post
+	var (
+		pPosts []postgres.Post
+		mPosts []model.Post
+	)
 	if err := q.Offset(int(offset)).Limit(int(limit)).Find(&pPosts).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			return mPosts, nil
 		}
 		return nil, err
 	}
 
-	var mPosts []model.Post
 	for _, p := range pPosts {
 		mPosts = append(mPosts, modelimpl.PostFromRecord(p))
 	}

@@ -10,8 +10,8 @@ type comment struct {
 	id        uint64
 	body      string
 	postID    uint64
-	createdAt time.Time
-	updatedAt time.Time
+	createdAt time.Time `gorm:"autoCreateTime"`
+	updatedAt time.Time `gorm:"autoCreateTime"`
 }
 
 func (c *comment) ID() uint64 { return c.id }

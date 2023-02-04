@@ -72,14 +72,10 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		nextPostIndex uint64
 	)
 
-	// get posts
 	if input.ID != 0 {
 		post, err := u.postRepo.Get(ctx, input.ID)
 		if err != nil {
 			return nil, err
-		}
-		if post == nil {
-			return nil, nil
 		}
 		mPosts = append(mPosts, post)
 	} else {
@@ -91,13 +87,10 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 			limit = maxResponseSize
 		}
 
-		// increment limit to check if there is at least one more page.
+		// increment limit to check if there is at least one more post
 		posts, err := u.postRepo.Find(ctx, input.TagID, input.SearchChar, input.Offset, limit+1)
 		if err != nil {
 			return nil, err
-		}
-		if posts == nil {
-			return nil, nil
 		}
 		mPosts = append(mPosts, posts...)
 

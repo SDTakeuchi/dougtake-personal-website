@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
+	"gorm.io/gorm"
 )
 
 func Test_findPostsImpl_Execute(t *testing.T) {
@@ -315,7 +316,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 				mockPost.EXPECT().
 					Get(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(nil, nil)
+					Return(nil, gorm.ErrRecordNotFound)
 			},
 			func(mockTag *mockrepo.MockTag) {
 				mockTag.EXPECT().
@@ -330,7 +331,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 					Return(nil, nil)
 			},
 			nil,
-			false,
+			true,
 		},
 	}
 	for _, tt := range tests {

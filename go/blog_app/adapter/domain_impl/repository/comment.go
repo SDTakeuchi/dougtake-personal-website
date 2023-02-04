@@ -19,31 +19,40 @@ func NewCommentRepository(db *postgres.DB) repository.Comment {
 }
 
 func (r *commentRepository) Create(ctx context.Context, comment model.Comment) (model.Comment, error) {
-	return nil, nil
+	pComment := modelimpl.CommentToRecord(comment)
+	if err := r.db.Conn.WithContext(ctx).Create(&pComment).Error; err != nil {
+		return nil, err
+	}
+	return modelimpl.CommentFromRecord(pComment), nil
 }
 
 func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
-	var comments []postgres.Comment
+	var (
+		pComments []postgres.Comment
+		mComments []model.Comment
+	)
 
-	if err := r.db.Conn.Order("created_at").Find(&comments).Error; err != nil {
+	if err := r.db.Conn.WithContext(ctx).Order("created_at").Where("post_id = ?", postID).Find(&pComments).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			return mComments, nil
 		}
 		return nil, err
 	}
 
-	var mComments []model.Comment
-	for _, c := range comments {
+	for _, c := range pComments {
 		mComments = append(mComments, modelimpl.CommentFromRecord(c))
 	}
-
 	return mComments, nil
 }
 
 func (r *commentRepository) Update(ctx context.Context, comment model.Comment) (model.Comment, error) {
-	return nil, nil
+	pComment := modelimpl.CommentToRecord(comment)
+	if err := r.db.Conn.WithContext(ctx).Save(&pComment).Error; err != nil {
+		return nil, err
+	}
+	return modelimpl.CommentFromRecord(pComment), nil
 }
 
 func (r *commentRepository) Delete(ctx context.Context, id uint64) error {
-	return nil
+	return r.db.Conn.WithContext(ctx).Delete(&postgres.Comment{}, id).Error
 }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func createJSONResponse(c *gin.Context, status int, body any) {
@@ -18,15 +19,17 @@ func createJSONResponse(c *gin.Context, status int, body any) {
 
 func createErrResponse(c *gin.Context, err error) {
 	var (
-		code int
-		msg  constants.ResponseMessage
-		res  gin.H
+		statusCode int
+		msg        constants.ResponseMessage
+		res        gin.H
 	)
 
 	switch err {
-	// case :
+	case gorm.ErrRecordNotFound:
+		statusCode = http.StatusNotFound
+		msg = constants.RecordNotFound
 	default:
-		code = http.StatusInternalServerError
+		statusCode = http.StatusInternalServerError
 		msg = constants.DefaultErrorMessage
 	}
 
@@ -38,5 +41,5 @@ func createErrResponse(c *gin.Context, err error) {
 		res = gin.H{"message": msg.String()}
 	}
 
-	c.JSON(code, res)
+	c.JSON(statusCode, res)
 }
