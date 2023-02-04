@@ -80,5 +80,31 @@ func (r *postRepository) Update(ctx context.Context, post model.Post) (model.Pos
 }
 
 func (r *postRepository) Delete(ctx context.Context, id uint64) error {
-	return r.db.Conn.WithContext(ctx).Delete(&postgres.Post{}, id).Error
+	var post postgres.Post
+	if err := r.db.Conn.WithContext(ctx).Take(&post, id).Error; err != nil {
+		return err
+	}
+
+	tx := r.db.Conn.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	if err := r.db.Conn.WithContext(ctx).Delete(&postgres.Comment{}, "post_id = ?", post.ID).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := r.db.Conn.WithContext(ctx).Delete(&postgres.Post{}, id).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 }
