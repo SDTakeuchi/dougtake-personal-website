@@ -41,20 +41,22 @@ func NewPostHandler(findPostsUsecase usecase.FindPosts) PostHandler {
 }
 
 func (p *postHandler) GetPosts(c *gin.Context) {
-	param := GetPostsRequest{}
+	params := GetPostsRequest{}
 	// TODO: fail this to know what kind of error we get, and add it to createErrResponse's switch-cases
-	if err := c.BindQuery(&param); err != nil {
+	if err := c.BindQuery(&params); err != nil {
 		createErrResponse(c, err)
+		return
 	}
 	output, err := p.findPostsUsecase.Execute(c, usecase.FindPostsInput{
-		ID:         param.ID,
-		TagID:      param.TagID,
-		SearchChar: param.SearchChar,
-		Offset:     param.PageIndex,
-		Limit:      param.PageSize,
+		ID:         params.ID,
+		TagID:      params.TagID,
+		SearchChar: params.SearchChar,
+		Offset:     params.PageIndex,
+		Limit:      params.PageSize,
 	})
 	if err != nil {
 		createErrResponse(c, err)
+		return
 	}
 	createJSONResponse(c, http.StatusOK, *output)
 }

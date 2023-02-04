@@ -13,7 +13,6 @@ func createJSONResponse(c *gin.Context, status int, body any) {
 	if http.StatusText(status) == "" {
 		panic(fmt.Errorf("unknown status code: %d", status))
 	}
-
 	c.JSON(status, gin.H{"data": body})
 }
 
