@@ -96,12 +96,12 @@ func (r *postRepository) Delete(ctx context.Context, id uint64) error {
 		return err
 	}
 
-	if err := r.db.Conn.WithContext(ctx).Delete(&postgres.Comment{}, "post_id = ?", post.ID).Error; err != nil {
+	if err := tx.WithContext(ctx).Delete(&postgres.Comment{}, "post_id = ?", post.ID).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	if err := r.db.Conn.WithContext(ctx).Delete(&postgres.Post{}, id).Error; err != nil {
+	if err := tx.WithContext(ctx).Delete(&postgres.Post{}, id).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
