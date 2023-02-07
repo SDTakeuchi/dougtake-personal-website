@@ -1,9 +1,11 @@
 package usecase
 
 import (
+	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/domain/model"
 	"blog_app/domain/repository"
 	"context"
+	"time"
 )
 
 type (
@@ -15,20 +17,45 @@ type (
 		Body   string
 	}
 	CreateCommentOutput struct {
-		comment model.Comment
+		Comment model.Comment
 	}
 	createCommentImpl struct {
-		repository repository.Comment
+		postRepo    repository.Post
+		commentRepo repository.Comment
 	}
 )
 
-func NewCreateComment(repository repository.Comment) CreateComment {
-	return &createCommentImpl{repository: repository}
+func NewCreateComment(
+	postRepo repository.Post,
+	commentRepo repository.Comment,
+) CreateComment {
+	return &createCommentImpl{
+		postRepo:    postRepo,
+		commentRepo: commentRepo,
+	}
 }
 
 func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInput) (*CreateCommentOutput, error) {
-	var mComment model.Comment
+	post, err := u.postRepo.Get(ctx, input.PostID)
+	if err != nil {
+		return nil, err
+	}
 
-	// u.repository.Create(ctx, postID, )
-	return &CreateCommentOutput{mComment}, nil
+	now := time.Now()
+	comment, err := modelimpl.NewComment(
+		0,
+		input.Body,
+		post.ID(),
+		now,
+		now,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	comment, err = u.commentRepo.Create(ctx, comment)
+	if err != nil {
+		return nil, err
+	}
+	return &CreateCommentOutput{comment}, nil
 }

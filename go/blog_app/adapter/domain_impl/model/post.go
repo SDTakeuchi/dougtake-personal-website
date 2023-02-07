@@ -4,6 +4,7 @@ import (
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
 	"blog_app/domain/model/uuid"
+	"errors"
 	"time"
 )
 
@@ -30,6 +31,30 @@ func (p *post) TagIDs() []uint64 { return p.tagIDs }
 func (p *post) CreatedAt() time.Time { return p.createdAt }
 
 func (p *post) UpdatedAt() time.Time { return p.updatedAt }
+
+func NewPost(
+	id uint64,
+	title, body string,
+	userID uuid.UUID,
+	tagIDs []uint64,
+	createdAt, updatedAt time.Time,
+) (model.Post, error) {
+	if title == "" {
+		return nil, errors.New("post title must not be empty")
+	}
+	if body == "" {
+		return nil, errors.New("post body must not be empty")
+	}
+	return &post{
+		id:        id,
+		title:     title,
+		body:      body,
+		userID:    userID,
+		tagIDs:    tagIDs,
+		createdAt: createdAt,
+		updatedAt: updatedAt,
+	}, nil
+}
 
 func PostFromRecord(r postgres.Post) model.Post {
 	return &post{
