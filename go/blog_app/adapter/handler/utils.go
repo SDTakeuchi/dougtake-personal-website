@@ -28,6 +28,9 @@ func createErrResponse(c *gin.Context, err error) {
 	case gorm.ErrRecordNotFound:
 		statusCode = http.StatusNotFound
 		msg = constants.RecordNotFound
+	case errFailedToBindQuery:
+		statusCode = http.StatusBadRequest
+		msg = constants.FailedToBindQuery
 	default:
 		statusCode = http.StatusInternalServerError
 		msg = constants.DefaultErrorMessage

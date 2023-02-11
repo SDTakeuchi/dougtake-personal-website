@@ -9,11 +9,17 @@ import (
 func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	var (
 		postHandler = registry.PostHandler
+		commentHandler = registry.CommentHandler
 	)
 
-	postGroup := engine.Group("/post")
+	postGroup := engine.Group("/posts")
 	{
 		postGroup.GET("", postHandler.GetPosts)
+	}
+
+	commentGroup := engine.Group("/comments")
+	{
+		commentGroup.POST("", commentHandler.CreateComment)
 	}
 }
 

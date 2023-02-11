@@ -20,6 +20,8 @@ func initialize(db *postgres.DB) registry.Registry {
 		repository.NewTagRepository,
 		// comment
 		repository.NewCommentRepository,
+		usecase.NewCreateComment,
+		handler.NewCommenttHandler,
 		// post
 		repository.NewPostRepository,
 		usecase.NewFindPosts,

@@ -376,7 +376,8 @@ func genRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
-		posts = append(posts, modelimpl.PostFromRecord(p))
+		model, _ := modelimpl.PostFromRecord(p)
+		posts = append(posts, model)
 	}
 	return posts
 }

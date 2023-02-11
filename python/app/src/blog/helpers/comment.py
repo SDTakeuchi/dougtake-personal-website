@@ -7,5 +7,5 @@ def create_comment(post_id: int, body: str):
         post_id: post_id,
         body: body,
     }
-    res = requests.get(constants.CREATE_COMMENT, json=payload)
+    res = requests.get(constants.CREATE_COMMENT.url, json=payload)
     return json.loads(res.json())

@@ -8,11 +8,17 @@ import (
 type Registry struct {
 	DBConn      *postgres.DB
 	PostHandler handler.PostHandler
+	CommentHandler handler.CommentHandler
 }
 
-func NewRegistry(db *postgres.DB, postHandler handler.PostHandler) Registry {
+func NewRegistry(
+	db *postgres.DB,
+	postHandler handler.PostHandler,
+	commentHandler handler.CommentHandler,
+) Registry {
 	return Registry{
 		db,
 		postHandler,
+		commentHandler,
 	}
 }

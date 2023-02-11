@@ -6,7 +6,6 @@ import (
 	"blog_app/usecase"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type (
@@ -32,8 +31,8 @@ type (
 		PageSize   uint64 `json:"page_size"`
 	}
 
-	GetPostsResponse struct {
-		Posts usecase.FindPostsOutput `json:"posts"`
+	getPostsResponse struct {
+		posts usecase.FindPostsOutput
 	}
 )
 
@@ -41,14 +40,13 @@ func NewPostHandler(findPostsUsecase usecase.FindPosts) PostHandler {
 	return &postHandler{findPostsUsecase}
 }
 
-func (p *postHandler) GetPosts(c *gin.Context) {
+func (h *postHandler) GetPosts(c *gin.Context) {
 	params := GetPostsRequest{}
-	// TODO: fail this to know what kind of error we get, and add it to createErrResponse's switch-cases
 	if err := c.BindQuery(&params); err != nil {
-		createErrResponse(c, err)
+		createErrResponse(c, errFailedToBindQuery)
 		return
 	}
-	output, err := p.findPostsUsecase.Execute(c, usecase.FindPostsInput{
+	output, err := h.findPostsUsecase.Execute(c, usecase.FindPostsInput{
 		ID:         params.ID,
 		TagID:      params.TagID,
 		SearchChar: params.SearchChar,
@@ -56,12 +54,14 @@ func (p *postHandler) GetPosts(c *gin.Context) {
 		Limit:      params.PageSize,
 	})
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			createErrResponse(c, err)
-			return
-		}
 		createErrResponse(c, err)
 		return
 	}
-	createJSONResponse(c, http.StatusOK, *output)
+	createJSONResponse(
+		c,
+		http.StatusOK,
+		getPostsResponse{
+			*output,
+		},
+	)
 }
