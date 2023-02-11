@@ -23,15 +23,23 @@ func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Pos
 	if err := r.db.Conn.WithContext(ctx).Create(&pPost).Error; err != nil {
 		return nil, err
 	}
-	return modelimpl.PostFromRecord(pPost), nil
+	mPost, err := modelimpl.PostFromRecord(pPost)
+	if err != nil {
+		return nil, err
+	}
+	return mPost, nil
 }
 
 func (r *postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
-	var post postgres.Post
-	if err := r.db.Conn.WithContext(ctx).Take(&post, id).Error; err != nil {
+	var pPost postgres.Post
+	if err := r.db.Conn.WithContext(ctx).Take(&pPost, id).Error; err != nil {
 		return nil, err
 	}
-	return modelimpl.PostFromRecord(post), nil
+	mPost, err := modelimpl.PostFromRecord(pPost)
+	if err != nil {
+		return nil, err
+	}
+	return mPost, nil
 }
 
 func (r *postRepository) Find(
@@ -64,7 +72,11 @@ func (r *postRepository) Find(
 	}
 
 	for _, p := range pPosts {
-		mPosts = append(mPosts, modelimpl.PostFromRecord(p))
+		mPost, err := modelimpl.PostFromRecord(p)
+		if err != nil {
+			return nil, err
+		}
+		mPosts = append(mPosts, mPost)
 	}
 
 	return mPosts, nil
@@ -76,7 +88,11 @@ func (r *postRepository) Update(ctx context.Context, post model.Post) (model.Pos
 	if err := r.db.Conn.WithContext(ctx).Save(&pPost).Error; err != nil {
 		return nil, err
 	}
-	return modelimpl.PostFromRecord(pPost), nil
+	mPost, err := modelimpl.PostFromRecord(pPost)
+	if err != nil {
+		return nil, err
+	}
+	return mPost, nil
 }
 
 func (r *postRepository) Delete(ctx context.Context, id uint64) error {

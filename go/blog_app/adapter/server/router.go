@@ -8,7 +8,7 @@ import (
 
 func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	var (
-		postHandler = registry.PostHandler
+		postHandler    = registry.PostHandler
 		commentHandler = registry.CommentHandler
 	)
 

@@ -6,8 +6,8 @@ import (
 )
 
 type Registry struct {
-	DBConn      *postgres.DB
-	PostHandler handler.PostHandler
+	DBConn         *postgres.DB
+	PostHandler    handler.PostHandler
 	CommentHandler handler.CommentHandler
 }
 
