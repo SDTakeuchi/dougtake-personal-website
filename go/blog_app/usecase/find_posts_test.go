@@ -403,14 +403,15 @@ func genRandomComments(wantCount int, postIDs []uint64) []model.Comment {
 			postID = i
 		}
 
-		c := postgres.Comment{
+		pgC := postgres.Comment{
 			ID:        uint64(i),
 			Body:      genRandomChars(200),
 			PostID:    uint64(postID),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
-		comments = append(comments, modelimpl.CommentFromRecord(c))
+		c, _ := modelimpl.CommentFromRecord(pgC)
+		comments = append(comments, c)
 	}
 	return comments
 }

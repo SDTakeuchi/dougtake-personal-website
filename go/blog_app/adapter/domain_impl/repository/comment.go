@@ -23,7 +23,7 @@ func (r *commentRepository) Create(ctx context.Context, comment model.Comment) (
 	if err := r.db.Conn.WithContext(ctx).Create(&pComment).Error; err != nil {
 		return nil, err
 	}
-	return modelimpl.CommentFromRecord(pComment), nil
+	return modelimpl.CommentFromRecord(pComment)
 }
 
 func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
@@ -40,7 +40,11 @@ func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]
 	}
 
 	for _, c := range pComments {
-		mComments = append(mComments, modelimpl.CommentFromRecord(c))
+		c, err := modelimpl.CommentFromRecord(c)
+		if err != nil {
+			return nil, err
+		}
+		mComments = append(mComments, c)
 	}
 	return mComments, nil
 }
@@ -50,7 +54,7 @@ func (r *commentRepository) Update(ctx context.Context, comment model.Comment) (
 	if err := r.db.Conn.WithContext(ctx).Save(&pComment).Error; err != nil {
 		return nil, err
 	}
-	return modelimpl.CommentFromRecord(pComment), nil
+	return modelimpl.CommentFromRecord(pComment)
 }
 
 func (r *commentRepository) Delete(ctx context.Context, id uint64) error {
