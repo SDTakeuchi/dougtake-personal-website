@@ -9,7 +9,10 @@ type Tag interface {
 
 func ValidateTag(t Tag) error {
 	if t.Name() == "" {
-		return fmt.Errorf("%w: tag must have a name", ErrInvalidParams)
+		return fmt.Errorf(
+			"%w: tag must have a name",
+			ErrInvalidParams,
+		)
 	}
 	return nil
 }

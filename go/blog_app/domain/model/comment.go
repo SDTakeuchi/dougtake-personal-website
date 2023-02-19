@@ -15,13 +15,22 @@ type Comment interface {
 
 func ValidateComment(c Comment) error {
 	if c.Body() == "" {
-		return fmt.Errorf("%w: comment body must not be empty", ErrInvalidParams)
+		return fmt.Errorf(
+			"%w: comment body must not be empty",
+			ErrInvalidParams,
+		)
 	}
 	if c.PostID() == 0 {
-		return fmt.Errorf("%w: comment postID must not be empty", ErrInvalidParams)
+		return fmt.Errorf(
+			"%w: comment postID must not be empty",
+			ErrInvalidParams,
+		)
 	}
 	if c.CreatedAt().IsZero() && !c.UpdatedAt().IsZero() {
-		return fmt.Errorf("%w: comment createdAt must not be empty when updatedAt is filled", ErrInvalidParams)
+		return fmt.Errorf(
+			"%w: comment createdAt must not be empty when updatedAt is filled",
+			ErrInvalidParams,
+		)
 	}
 	return nil
 }
