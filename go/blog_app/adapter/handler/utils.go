@@ -4,18 +4,18 @@ import (
 	"blog_app/adapter/config"
 	"blog_app/adapter/constants"
 	"blog_app/domain/model"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func createJSONResponse(c *gin.Context, status int, body any) {
-	if http.StatusText(status) == "" {
-		panic(fmt.Errorf("unknown status code: %d", status))
-	}
-	c.JSON(status, gin.H{"data": body})
+// returns 200 response with provided parameters
+func createJSONResponse(c *gin.Context, body any) {
+	c.JSON(
+		http.StatusOK,
+		gin.H{"data": body},
+	)
 }
 
 func createErrResponse(c *gin.Context, err error) {

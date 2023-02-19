@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"net/http"
-
 	"blog_app/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -42,17 +40,19 @@ func (h *commentHandler) CreateComment(c *gin.Context) {
 		createErrResponse(c, errFailedToBindQuery)
 		return
 	}
-	output, err := h.createCommentUsecase.Execute(c, usecase.CreateCommentInput{
-		PostID: params.PostID,
-		Body:   params.Body,
-	})
+	output, err := h.createCommentUsecase.Execute(
+		c,
+		usecase.CreateCommentInput{
+			PostID: params.PostID,
+			Body:   params.Body,
+		},
+	)
 	if err != nil {
 		createErrResponse(c, err)
 		return
 	}
 	createJSONResponse(
 		c,
-		http.StatusOK,
 		createCommentResponse{
 			output.Comment.ID(),
 		},

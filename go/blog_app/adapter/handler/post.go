@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"net/http"
-
 	"blog_app/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -46,20 +44,22 @@ func (h *postHandler) GetPosts(c *gin.Context) {
 		createErrResponse(c, errFailedToBindQuery)
 		return
 	}
-	output, err := h.findPostsUsecase.Execute(c, usecase.FindPostsInput{
-		ID:         params.ID,
-		TagID:      params.TagID,
-		SearchChar: params.SearchChar,
-		Offset:     params.PageIndex,
-		Limit:      params.PageSize,
-	})
+	output, err := h.findPostsUsecase.Execute(
+		c,
+		usecase.FindPostsInput{
+			ID:         params.ID,
+			TagID:      params.TagID,
+			SearchChar: params.SearchChar,
+			Offset:     params.PageIndex,
+			Limit:      params.PageSize,
+		},
+	)
 	if err != nil {
 		createErrResponse(c, err)
 		return
 	}
 	createJSONResponse(
 		c,
-		http.StatusOK,
 		getPostsResponse{
 			*output,
 		},
