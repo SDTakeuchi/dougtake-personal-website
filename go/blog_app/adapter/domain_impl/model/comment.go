@@ -3,16 +3,54 @@ package model
 import (
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
+	"time"
 )
 
-func CommentFromRecord(r postgres.Comment) (model.Comment, error) {
-	return model.NewComment(
-		r.ID,
-		r.Body,
-		r.PostID,
-		r.CreatedAt,
-		r.UpdatedAt,
-	)
+type comment struct {
+	id        uint64
+	body      string
+	postID    uint64
+	createdAt time.Time `gorm:"autoCreateTime"`
+	updatedAt time.Time `gorm:"autoCreateTime"`
+}
+
+func (c *comment) ID() uint64 { return c.id }
+
+func (c *comment) Body() string { return c.body }
+
+func (c *comment) PostID() uint64 { return c.postID }
+
+func (c *comment) CreatedAt() time.Time { return c.createdAt }
+
+func (c *comment) UpdatedAt() time.Time { return c.updatedAt }
+
+func NewComment(
+	id uint64,
+	body string,
+	postID uint64,
+	createdAt, updatedAt time.Time,
+) (model.Comment, error) {
+	c := &comment{
+		id:        id,
+		body:      body,
+		postID:    postID,
+		createdAt: createdAt,
+		updatedAt: updatedAt,
+	}
+	if err := model.ValidateComment(c); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func CommentFromRecord(r postgres.Comment) model.Comment {
+	return &comment{
+		id:        r.ID,
+		body:      r.Body,
+		postID:    r.PostID,
+		createdAt: r.CreatedAt,
+		updatedAt: r.UpdatedAt,
+	}
 }
 
 func CommentToRecord(m model.Comment) postgres.Comment {

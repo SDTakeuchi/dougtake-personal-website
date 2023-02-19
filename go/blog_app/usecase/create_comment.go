@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/domain/model"
 	"blog_app/domain/repository"
 	"context"
@@ -41,7 +42,7 @@ func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInpu
 	}
 
 	now := time.Now()
-	comment, err := model.NewComment(
+	comment, err := modelimpl.NewComment(
 		0,
 		input.Body,
 		post.ID(),

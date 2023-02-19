@@ -13,41 +13,15 @@ type Comment interface {
 	UpdatedAt() time.Time
 }
 
-type comment struct {
-	id        uint64
-	body      string
-	postID    uint64
-	createdAt time.Time
-	updatedAt time.Time
-}
-
-func (c *comment) ID() uint64 { return c.id }
-
-func (c *comment) Body() string { return c.body }
-
-func (c *comment) PostID() uint64 { return c.id }
-
-func (c *comment) CreatedAt() time.Time { return c.createdAt }
-
-func (c *comment) UpdatedAt() time.Time { return c.updatedAt }
-
-func NewComment(
-	id uint64,
-	body string,
-	postID uint64,
-	createdAt, updatedAt time.Time,
-) (Comment, error) {
-	if body == "" {
-		return nil, errors.New("comment body must not be empty")
+func ValidateComment(c Comment) error {
+	if c.Body() == "" {
+		return errors.New("comment body must not be empty")
 	}
-	if postID == 0 {
-		return nil, errors.New("comment postID must not be empty")
+	if c.PostID() == 0 {
+		return errors.New("comment postID must not be empty")
 	}
-	return &comment{
-		id:        id,
-		body:      body,
-		postID:    postID,
-		createdAt: createdAt,
-		updatedAt: updatedAt,
-	}, nil
+	if c.CreatedAt().IsZero() && !c.UpdatedAt().IsZero() {
+		return errors.New("comment createdAt must not be empty when updatedAt is filled")
+	}
+	return nil
 }
