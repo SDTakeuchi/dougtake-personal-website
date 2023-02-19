@@ -2,6 +2,7 @@ from django.db import models
 from dataclasses import dataclass
 import datetime
 import uuid
+import utils
 
 @dataclass
 class Comment:
@@ -15,7 +16,8 @@ class Comment:
             comment_id: int = 0,
             body: str = '',
             created_at: datetime.datetime = datetime.datetime.now(),
-            updated_at: datetime.datetime = datetime.datetime.now(),):
+            updated_at: datetime.datetime = datetime.datetime.now(),
+        ):
         if utils.is_empty(body):
             raise Exception('body cannot be empty')
 

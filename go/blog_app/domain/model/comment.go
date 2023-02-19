@@ -1,7 +1,7 @@
 package model
 
 import (
-	"errors"
+	"fmt"
 	"time"
 )
 
@@ -15,13 +15,13 @@ type Comment interface {
 
 func ValidateComment(c Comment) error {
 	if c.Body() == "" {
-		return errors.New("comment body must not be empty")
+		return fmt.Errorf("%w: comment body must not be empty", ErrInvalidParams)
 	}
 	if c.PostID() == 0 {
-		return errors.New("comment postID must not be empty")
+		return fmt.Errorf("%w: comment postID must not be empty", ErrInvalidParams)
 	}
 	if c.CreatedAt().IsZero() && !c.UpdatedAt().IsZero() {
-		return errors.New("comment createdAt must not be empty when updatedAt is filled")
+		return fmt.Errorf("%w: comment createdAt must not be empty when updatedAt is filled", ErrInvalidParams)
 	}
 	return nil
 }

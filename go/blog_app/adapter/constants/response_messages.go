@@ -6,6 +6,7 @@ var (
 	DefaultErrorMessage ResponseMessage = "unexpected error has occurred: contact to the owner"
 	RecordNotFound      ResponseMessage = "record not found"
 	FailedToBindQuery   ResponseMessage = "failed to bind query: wrong format"
+	InvalidParams       ResponseMessage = "invalid parameters"
 )
 
 func (r ResponseMessage) String() string {

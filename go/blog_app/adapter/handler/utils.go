@@ -3,6 +3,7 @@ package handler
 import (
 	"blog_app/adapter/config"
 	"blog_app/adapter/constants"
+	"blog_app/domain/model"
 	"fmt"
 	"net/http"
 
@@ -31,6 +32,9 @@ func createErrResponse(c *gin.Context, err error) {
 	case errFailedToBindQuery:
 		statusCode = http.StatusBadRequest
 		msg = constants.FailedToBindQuery
+	case model.ErrInvalidParams:
+		statusCode = http.StatusBadRequest
+		msg = constants.InvalidParams
 	default:
 		statusCode = http.StatusInternalServerError
 		msg = constants.DefaultErrorMessage
@@ -39,7 +43,7 @@ func createErrResponse(c *gin.Context, err error) {
 	isDebug := config.Get().Debug
 	if isDebug {
 		// logger.Debug(err.Error())
-		res = gin.H{"message": msg.String() + ":" + err.Error()}
+		res = gin.H{"message": msg.String() + ": === DEBUG === :" + err.Error()}
 	} else {
 		res = gin.H{"message": msg.String()}
 	}

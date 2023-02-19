@@ -1,6 +1,6 @@
 package model
 
-import "errors"
+import "fmt"
 
 type Tag interface {
 	ID() uint64
@@ -9,7 +9,7 @@ type Tag interface {
 
 func ValidateTag(t Tag) error {
 	if t.Name() == "" {
-		return errors.New("tag must have a name")
+		return fmt.Errorf("%w: tag must have a name", ErrInvalidParams)
 	}
 	return nil
 }
