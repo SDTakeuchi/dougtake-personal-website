@@ -20,19 +20,19 @@ func ValidatePost(p Post) error {
 	if p.Title() == "" {
 		return fmt.Errorf(
 			"%w: post title must not be empty",
-			ErrInvalidParams,
+			ErrConstructor,
 		)
 	}
 	if p.Body() == "" {
 		return fmt.Errorf(
 			"%w: post body must not be empty",
-			ErrInvalidParams,
+			ErrConstructor,
 		)
 	}
 	if p.CreatedAt().IsZero() && !p.UpdatedAt().IsZero() {
 		return fmt.Errorf(
 			"%w: post createdAt must not be empty when updatedAt is filled",
-			ErrInvalidParams,
+			ErrConstructor,
 		)
 	}
 	return nil

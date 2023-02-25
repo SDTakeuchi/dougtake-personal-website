@@ -11,7 +11,7 @@ func ValidateTag(t Tag) error {
 	if t.Name() == "" {
 		return fmt.Errorf(
 			"%w: tag must have a name",
-			ErrInvalidParams,
+			ErrConstructor,
 		)
 	}
 	return nil

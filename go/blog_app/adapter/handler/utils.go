@@ -32,7 +32,7 @@ func createErrResponse(c *gin.Context, err error) {
 	case errFailedToBindQuery:
 		statusCode = http.StatusBadRequest
 		msg = constants.FailedToBindQuery
-	case model.ErrInvalidParams:
+	case model.ErrConstructor:
 		statusCode = http.StatusBadRequest
 		msg = constants.InvalidParams
 	default:

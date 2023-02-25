@@ -3,5 +3,5 @@ package model
 import "errors"
 
 var (
-	ErrInvalidParams = errors.New("invalid parameters")
+	ErrConstructor = errors.New("error in constructor")
 )
