@@ -1,8 +1,8 @@
 package config
 
 import (
-	"time"
 	"log"
+	"time"
 
 	"github.com/kelseyhightower/envconfig"
 )

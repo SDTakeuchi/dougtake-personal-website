@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from helpers import post
+from helpers import post, comment
 
 def post_index(request):
     arg = {
@@ -9,18 +9,31 @@ def post_index(request):
         'limit': request.GET.get('limit'),
     }
 
-    posts = post.find_posts(**arg)
+    res = post.find_posts(**arg)
+    if res.get('data') is None:
+        ctx = {
+            'message': res.get('message'),
+        }
+        return render(request, 'error.html', ctx)
+
     ctx = {
-        'posts': posts,
+        'res': res,
     }
     return render(request, 'index.html', ctx)
 
 def post_detail(request):
     if post_id := request.GET.get('post_id') is None:
         arg = {'post_id': post_id}
-    found_post = post.find_posts(request)
+
+    res = post.find_posts(**arg)
+    if res.get('data') is None:
+        ctx = {
+            'message': res.get('message'),
+        }
+        return render(request, 'error.html', ctx)
+
     ctx = {
-        'post': found_post,
+        'res': res,
     }
     return render(request, 'detail.html', ctx)
 
@@ -31,6 +44,27 @@ def post_detail(request):
 # def update_post(request):
 #     ctx = {}
 #     return render(request, 'post_form.html', ctx)
+
+# comment
+
+def create_comment(request):
+    args = {
+        'post_id': request.POST.get('post_id'),
+        'body': request.POST.get('body'),
+    }
+
+    res = comment.create_comment(**args)
+    if res.get('data') is None:
+        ctx = {
+            'message': res.get('message'),
+        }
+        return render(request, 'error.html', ctx)
+
+    ctx = {
+        'res': res,
+    }
+    # if post creation is done asyncronesly, html does not have to be returned.
+    return render(request, 'detail.html', ctx)
 
 # user
 

@@ -1,6 +1,4 @@
-from django.db import models
 from dataclasses import dataclass
-import datetime
 import utils
 
 @dataclass
