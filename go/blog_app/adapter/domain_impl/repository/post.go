@@ -28,7 +28,7 @@ func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Pos
 
 func (r *postRepository) Get(ctx context.Context, id uint64) (model.Post, error) {
 	var pPost postgres.Post
-	if err := r.db.Conn.WithContext(ctx).Take(&pPost, id).Error; err != nil {
+	if err := r.db.Conn.WithContext(ctx).Table("posts").Take(&pPost, id).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.PostFromRecord(pPost), nil

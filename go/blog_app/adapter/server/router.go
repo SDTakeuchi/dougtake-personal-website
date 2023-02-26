@@ -11,29 +11,23 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 		postHandler    = registry.PostHandler
 		commentHandler = registry.CommentHandler
 		tagHandler     = registry.TagHandler
+
+		apiGroup = engine.Group("/api")
+		v1       = apiGroup.Group("/v1")
 	)
 
-	postGroup := engine.Group("/posts")
+	postGroup := v1.Group("/posts")
 	{
 		postGroup.GET("", postHandler.GetPosts)
 	}
 
-	commentGroup := engine.Group("/comments")
+	commentGroup := v1.Group("/comments")
 	{
 		commentGroup.POST("", commentHandler.CreateComment)
 	}
 
-	tagGroup := engine.Group("/tags")
+	tagGroup := v1.Group("/tags")
 	{
 		tagGroup.GET("", tagHandler.GetTags)
 	}
 }
-
-//func InitRouting(e *echo.Echo, tagProvider tagProvider) {
-//	g := e.Group("/api")
-//	g.POST("/presets/", tagProvider.Post())
-//	g.GET("/presets/", tagProvider.Get())
-//	g.GET("/presets/:id", tagProvider.FindByID())
-//	g.PUT("/presets/:id", tagProvider.Put())
-//	g.DELETE("/presets/:id", tagProvider.Delete())
-//}

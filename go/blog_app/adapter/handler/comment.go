@@ -17,9 +17,6 @@ type (
 		PostID uint64 `json:"post_id"`
 		Body   string `json:"body"`
 	}
-	createCommentResponse struct {
-		CommentID uint64 `json:"comment_id"`
-	}
 )
 
 func NewCommentHandler(createCommentUsecase usecase.CreateComment) CommentHandler {
@@ -45,8 +42,6 @@ func (h *commentHandler) CreateComment(c *gin.Context) {
 	}
 	createJSONResponse(
 		c,
-		createCommentResponse{
-			(*output).Comment.ID(),
-		},
+		(*output).Comment.ID(),
 	)
 }

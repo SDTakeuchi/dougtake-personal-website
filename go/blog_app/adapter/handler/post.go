@@ -20,9 +20,6 @@ type (
 		PageIndex  uint64 `json:"page_index"`
 		PageSize   uint64 `json:"page_size"`
 	}
-	getPostsResponse struct {
-		Posts usecase.FindPostsOutput
-	}
 )
 
 func NewPostHandler(findPostsUsecase usecase.FindPosts) PostHandler {
@@ -51,8 +48,6 @@ func (h *postHandler) GetPosts(c *gin.Context) {
 	}
 	createJSONResponse(
 		c,
-		getPostsResponse{
-			*output,
-		}.Posts,
+		*output,
 	)
 }
