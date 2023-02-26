@@ -17,6 +17,9 @@ type (
 		PostID uint64 `json:"post_id"`
 		Body   string `json:"body"`
 	}
+	createCommentResponse struct {
+		ID uint64 `json:"comment_id"`
+	}
 )
 
 func NewCommentHandler(createCommentUsecase usecase.CreateComment) CommentHandler {
@@ -25,7 +28,7 @@ func NewCommentHandler(createCommentUsecase usecase.CreateComment) CommentHandle
 
 func (h *commentHandler) CreateComment(c *gin.Context) {
 	params := createCommentRequest{}
-	if err := c.BindQuery(&params); err != nil {
+	if err := c.Bind(&params); err != nil {
 		createErrResponse(c, errFailedToBindQuery)
 		return
 	}
@@ -42,6 +45,8 @@ func (h *commentHandler) CreateComment(c *gin.Context) {
 	}
 	createJSONResponse(
 		c,
-		(*output).Comment.ID(),
+		createCommentResponse{
+			(*output).Comment.ID(),
+		},
 	)
 }

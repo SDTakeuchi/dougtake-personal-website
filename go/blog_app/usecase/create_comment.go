@@ -36,7 +36,8 @@ func NewCreateComment(
 }
 
 func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInput) (*CreateCommentOutput, error) {
-	post, err := u.postRepo.Get(ctx, input.PostID)
+	// TODO: change GET() to COUNT() for performance optimization
+	_, err := u.postRepo.Get(ctx, input.PostID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +46,7 @@ func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInpu
 	comment, err := modelimpl.NewComment(
 		0,
 		input.Body,
-		post.ID(),
+		input.PostID,
 		now,
 		now,
 	)
