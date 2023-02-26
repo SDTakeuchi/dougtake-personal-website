@@ -21,7 +21,7 @@ type (
 		PageSize   uint64 `json:"page_size"`
 	}
 	getPostsResponse struct {
-		posts usecase.FindPostsOutput
+		Posts usecase.FindPostsOutput
 	}
 )
 
@@ -53,6 +53,6 @@ func (h *postHandler) GetPosts(c *gin.Context) {
 		c,
 		getPostsResponse{
 			*output,
-		},
+		}.Posts,
 	)
 }

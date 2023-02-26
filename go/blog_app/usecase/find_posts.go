@@ -19,27 +19,27 @@ type (
 		Limit      uint64
 	}
 	tagOutput struct {
-		ID   uint64
-		Name string
+		ID   uint64 `json:"id"`
+		Name string `json:"name"`
 	}
 	commentOutput struct {
-		ID        uint64
-		Body      string
-		CreatedAt time.Time
-		UpdatedAt time.Time
+		ID        uint64    `json:"id"`
+		Body      string    `json:"body"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
 	}
 	postOutput struct {
-		ID        uint64
-		Title     string
-		Body      string
-		CreatedAt time.Time
-		UpdatedAt time.Time
-		Tags      []tagOutput
-		Comments  []commentOutput
+		ID        uint64          `json:"id"`
+		Title     string          `json:"title"`
+		Body      string          `json:"body"`
+		CreatedAt time.Time       `json:"created_at"`
+		UpdatedAt time.Time       `json:"updated_at"`
+		Tags      []tagOutput     `json:"tags"`
+		Comments  []commentOutput `json:"comments"`
 	}
 	FindPostsOutput struct {
-		Posts         []postOutput
-		NextPostIndex uint64
+		Posts         []postOutput `json:"posts"`
+		NextPostIndex uint64       `json:"next_post_index"`
 	}
 	findPostsImpl struct {
 		postRepo    repository.Post
