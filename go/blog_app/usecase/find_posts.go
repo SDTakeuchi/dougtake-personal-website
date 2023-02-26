@@ -88,7 +88,13 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 		}
 
 		// increment limit to check if there is at least one more post
-		posts, err := u.postRepo.Find(ctx, input.TagID, input.SearchChar, input.Offset, limit+1)
+		posts, err := u.postRepo.Find(
+			ctx,
+			input.TagID,
+			input.SearchChar,
+			input.Offset,
+			limit+1,
+		)
 		if err != nil {
 			return nil, err
 		}

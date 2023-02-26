@@ -10,6 +10,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	var (
 		postHandler    = registry.PostHandler
 		commentHandler = registry.CommentHandler
+		tagHandler     = registry.TagHandler
 	)
 
 	postGroup := engine.Group("/posts")
@@ -20,6 +21,11 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	commentGroup := engine.Group("/comments")
 	{
 		commentGroup.POST("", commentHandler.CreateComment)
+	}
+
+	tagGroup := engine.Group("/tags")
+	{
+		tagGroup.GET("", tagHandler.GetTags)
 	}
 }
 

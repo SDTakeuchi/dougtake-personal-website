@@ -9,16 +9,19 @@ type Registry struct {
 	DBConn         *postgres.DB
 	PostHandler    handler.PostHandler
 	CommentHandler handler.CommentHandler
+	TagHandler handler.TagHandler
 }
 
 func NewRegistry(
 	db *postgres.DB,
 	postHandler handler.PostHandler,
 	commentHandler handler.CommentHandler,
+	tagHandler handler.TagHandler,
 ) Registry {
 	return Registry{
 		db,
 		postHandler,
 		commentHandler,
+		tagHandler,
 	}
 }

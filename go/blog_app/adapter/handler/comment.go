@@ -9,24 +9,16 @@ import (
 type (
 	CommentHandler interface {
 		CreateComment(c *gin.Context)
-		// dbConn            *gorm.DB
-		// findPosstsUsecase usecase.FindPosts
-		// tagRepository     repository.Post
 	}
-
 	commentHandler struct {
 		createCommentUsecase usecase.CreateComment
-		// updateCommentUsecase usecase.UpdateComment
-		// deleteCommentUsecase usecase.DeleteComment
 	}
-
-	CreateCommentRequest struct {
+	createCommentRequest struct {
 		PostID uint64 `json:"post_id"`
 		Body   string `json:"body"`
 	}
-
 	createCommentResponse struct {
-		commentID uint64
+		CommentID uint64 `json:"comment_id"`
 	}
 )
 
@@ -35,7 +27,7 @@ func NewCommentHandler(createCommentUsecase usecase.CreateComment) CommentHandle
 }
 
 func (h *commentHandler) CreateComment(c *gin.Context) {
-	params := CreateCommentRequest{}
+	params := createCommentRequest{}
 	if err := c.BindQuery(&params); err != nil {
 		createErrResponse(c, errFailedToBindQuery)
 		return
@@ -54,7 +46,7 @@ func (h *commentHandler) CreateComment(c *gin.Context) {
 	createJSONResponse(
 		c,
 		createCommentResponse{
-			output.Comment.ID(),
+			(*output).Comment.ID(),
 		},
 	)
 }

@@ -56,7 +56,7 @@ func (r *postRepository) Find(
 		pPosts []postgres.Post
 		mPosts []model.Post
 	)
-	if err := q.Offset(int(offset)).Limit(int(limit)).Find(&pPosts).Error; err != nil {
+	if err := q.Table("posts").Offset(int(offset)).Limit(int(limit)).Find(&pPosts).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return mPosts, nil
 		}

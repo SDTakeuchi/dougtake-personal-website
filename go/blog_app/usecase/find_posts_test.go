@@ -350,9 +350,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 				mockTag,
 				mockComment,
 			)
-			usecaseImpl, _ := findPosts.(*findPostsImpl)
 
-			got, err := usecaseImpl.Execute(tt.args.ctx, tt.args.input)
+			got, err := findPosts.Execute(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("findPostsImpl.Execute() error = %+v, wantErr %+v", err, tt.wantErr)
 				return

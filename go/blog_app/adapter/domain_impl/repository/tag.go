@@ -6,8 +6,6 @@ import (
 	"blog_app/domain/model"
 	"blog_app/domain/repository"
 	"context"
-
-	"gorm.io/gorm"
 )
 
 type tagRepository struct {
@@ -27,27 +25,24 @@ func (r *tagRepository) Create(ctx context.Context, tag model.Tag) (model.Tag, e
 }
 
 func (r *tagRepository) Find(ctx context.Context, ids []uint64) ([]model.Tag, error) {
-	records := []postgres.Tag{}
+	pTags := []postgres.Tag{}
 
 	q := r.db.Conn.Order("name")
 
 	if len(ids) > 0 {
-		// TIPS: surround "?" when using IN query
+		// TIPS: surround "?" with patentheses when using IN query
 		q = q.Where("id IN (?)", ids)
 	}
 
-	if err := q.Find(&records).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
+	if err := q.Find(&pTags).Error; err != nil {
 		return nil, err
 	}
 
-	models := make([]model.Tag, len(records))
-	for i, v := range records {
-		models[i] = modelimpl.TagFromRecord(v)
+	mTags := make([]model.Tag, len(pTags))
+	for i, v := range pTags {
+		mTags[i] = modelimpl.TagFromRecord(v)
 	}
-	return models, nil
+	return mTags, nil
 }
 
 func (r *tagRepository) Update(ctx context.Context, tag model.Tag) (model.Tag, error) {

@@ -24,6 +24,8 @@ func initialize(db *postgres.DB) registry.Registry {
 	postHandler := handler.NewPostHandler(findPosts)
 	createComment := usecase.NewCreateComment(post, comment)
 	commentHandler := handler.NewCommentHandler(createComment)
-	registryRegistry := registry.NewRegistry(db, postHandler, commentHandler)
+	getTags := usecase.NewGetTags(tag)
+	tagHandler := handler.NewTagHandler(getTags)
+	registryRegistry := registry.NewRegistry(db, postHandler, commentHandler, tagHandler)
 	return registryRegistry
 }

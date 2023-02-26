@@ -139,8 +139,7 @@ func Test_createCommentImpl_Execute(t *testing.T) {
 				mockPost,
 				mockComment,
 			)
-			usecaseImpl, _ := createComment.(*createCommentImpl)
-			got, err := usecaseImpl.Execute(tt.args.ctx, tt.args.input)
+			got, err := createComment.Execute(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("createCommentImpl.Execute() error = %v, wantErr %v", err, tt.wantErr)
 				return
