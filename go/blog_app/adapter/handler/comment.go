@@ -14,8 +14,8 @@ type (
 		createCommentUsecase usecase.CreateComment
 	}
 	createCommentRequest struct {
-		PostID uint64 `json:"post_id"`
-		Body   string `json:"body"`
+		PostID uint64 `form:"post_id"`
+		Body   string `form:"body"`
 	}
 	createCommentResponse struct {
 		ID uint64 `json:"comment_id"`

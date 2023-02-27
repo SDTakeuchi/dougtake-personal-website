@@ -48,7 +48,7 @@ func (u *createCommentImpl) Execute(ctx context.Context, input CreateCommentInpu
 		input.Body,
 		input.PostID,
 		now,
-		now,
+		time.Time{},
 	)
 	if err != nil {
 		return nil, err

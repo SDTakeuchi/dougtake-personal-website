@@ -14,11 +14,7 @@ type (
 		getTagsUsecase usecase.GetTags
 	}
 	getTagsRequest struct {
-		IDs []uint64 `json:"ids"`
-	}
-	tag struct {
-		ID   uint64 `json:"id"`
-		Name string `json:"name"`
+		IDs []uint64 `form:"ids"`
 	}
 	getTagsResponse struct {
 		Tags []tag `json:"tags"`

@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"blog_app/domain/model"
+	"blog_app/domain/model/time"
 	"blog_app/domain/repository"
 	"context"
-	"time"
 )
 
 type (
@@ -19,27 +19,27 @@ type (
 		Limit      uint64
 	}
 	tagOutput struct {
-		ID   uint64 `json:"id"`
-		Name string `json:"name"`
+		ID   uint64
+		Name string
 	}
 	commentOutput struct {
-		ID        uint64    `json:"id"`
-		Body      string    `json:"body"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
+		ID        uint64
+		Body      string
+		CreatedAt time.Time
+		UpdatedAt time.Time
 	}
 	postOutput struct {
-		ID        uint64          `json:"id"`
-		Title     string          `json:"title"`
-		Body      string          `json:"body"`
-		CreatedAt time.Time       `json:"created_at"`
-		UpdatedAt time.Time       `json:"updated_at"`
-		Tags      []tagOutput     `json:"tags"`
-		Comments  []commentOutput `json:"comments"`
+		ID        uint64
+		Title     string
+		Body      string
+		CreatedAt time.Time
+		UpdatedAt time.Time
+		Tags      []tagOutput
+		Comments  []commentOutput
 	}
 	FindPostsOutput struct {
-		Posts         []postOutput `json:"posts"`
-		NextPostIndex uint64       `json:"next_post_index"`
+		Posts         []postOutput
+		NextPostIndex uint64
 	}
 	findPostsImpl struct {
 		postRepo    repository.Post
@@ -119,8 +119,8 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 			tags = append(
 				tags,
 				tagOutput{
-					t.ID(),
-					t.Name(),
+					ID:   t.ID(),
+					Name: t.Name(),
 				},
 			)
 		}
@@ -136,10 +136,10 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 			comments = append(
 				comments,
 				commentOutput{
-					c.ID(),
-					c.Body(),
-					c.CreatedAt(),
-					c.UpdatedAt(),
+					ID:        c.ID(),
+					Body:      c.Body(),
+					CreatedAt: time.Time{Time: c.CreatedAt()},
+					UpdatedAt: time.Time{Time: c.UpdatedAt()},
 				},
 			)
 		}
@@ -151,8 +151,8 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 				ID:        p.ID(),
 				Title:     p.Title(),
 				Body:      p.Body(),
-				CreatedAt: p.CreatedAt(),
-				UpdatedAt: p.UpdatedAt(),
+				CreatedAt: time.Time{Time: p.CreatedAt()},
+				UpdatedAt: time.Time{Time: p.UpdatedAt()},
 				Tags:      tags,
 				Comments:  comments,
 			},
@@ -160,7 +160,7 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 	}
 
 	return &FindPostsOutput{
-		postOutputs,
-		nextPostIndex,
+		Posts:         postOutputs,
+		NextPostIndex: nextPostIndex,
 	}, nil
 }
