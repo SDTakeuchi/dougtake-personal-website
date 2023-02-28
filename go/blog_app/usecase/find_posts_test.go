@@ -4,6 +4,7 @@ import (
 	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
+	modeltime "blog_app/domain/model/time"
 	"blog_app/domain/model/uuid"
 	mockrepo "blog_app/domain/repository/mock"
 	"context"
@@ -84,8 +85,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[1].ID(),
 						randomPosts[1].Title(),
 						randomPosts[1].Body(),
-						randomPosts[1].CreatedAt(),
-						randomPosts[1].UpdatedAt(),
+						modeltime.Time{randomPosts[1].CreatedAt()},
+						modeltime.Time{randomPosts[1].UpdatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -100,8 +101,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 							{
 								randomComments[2].ID(),
 								randomComments[2].Body(),
-								randomComments[2].CreatedAt(),
-								randomComments[2].UpdatedAt(),
+								modeltime.Time{randomComments[2].CreatedAt()},
+								modeltime.Time{randomComments[2].UpdatedAt()},
 							},
 						},
 					},
@@ -150,8 +151,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[0].ID(),
 						randomPosts[0].Title(),
 						randomPosts[0].Body(),
-						randomPosts[0].CreatedAt(),
-						randomPosts[0].UpdatedAt(),
+						modeltime.Time{randomPosts[0].CreatedAt()},
+						modeltime.Time{randomPosts[0].CreatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -166,8 +167,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 							{
 								randomComments[0].ID(),
 								randomComments[0].Body(),
-								randomComments[0].CreatedAt(),
-								randomComments[0].UpdatedAt(),
+								modeltime.Time{randomComments[0].CreatedAt()},
+								modeltime.Time{randomComments[0].CreatedAt()},
 							},
 						},
 					},
@@ -215,8 +216,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[0].ID(),
 						randomPosts[0].Title(),
 						randomPosts[0].Body(),
-						randomPosts[0].CreatedAt(),
-						randomPosts[0].UpdatedAt(),
+						modeltime.Time{randomPosts[0].CreatedAt()},
+						modeltime.Time{randomPosts[0].CreatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -231,8 +232,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 							{
 								randomComments[0].ID(),
 								randomComments[0].Body(),
-								randomComments[0].CreatedAt(),
-								randomComments[0].UpdatedAt(),
+								modeltime.Time{randomComments[0].CreatedAt()},
+								modeltime.Time{randomComments[0].CreatedAt()},
 							},
 						},
 					},
@@ -280,8 +281,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[1].ID(),
 						randomPosts[1].Title(),
 						randomPosts[1].Body(),
-						randomPosts[1].CreatedAt(),
-						randomPosts[1].UpdatedAt(),
+						modeltime.Time{randomPosts[1].CreatedAt()},
+						modeltime.Time{randomPosts[1].CreatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -296,8 +297,8 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 							{
 								randomComments[2].ID(),
 								randomComments[2].Body(),
-								randomComments[2].CreatedAt(),
-								randomComments[2].UpdatedAt(),
+								modeltime.Time{randomComments[2].CreatedAt()},
+								modeltime.Time{randomComments[2].CreatedAt()},
 							},
 						},
 					},
