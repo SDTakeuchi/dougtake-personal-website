@@ -26,6 +26,14 @@ func (r *commentRepository) Create(ctx context.Context, comment model.Comment) (
 	return modelimpl.CommentFromRecord(pComment), nil
 }
 
+func (r *commentRepository) Get(ctx context.Context, id uint64) (model.Comment, error) {
+	var pComment postgres.Comment
+	if err := r.db.Conn.WithContext(ctx).Take(&pComment, id).Error; err != nil {
+		return nil, err
+	}
+	return modelimpl.CommentFromRecord(pComment), nil
+}
+
 func (r *commentRepository) FindByPostID(ctx context.Context, postID uint64) ([]model.Comment, error) {
 	var (
 		pComments []postgres.Comment

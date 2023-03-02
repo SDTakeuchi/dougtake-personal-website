@@ -24,6 +24,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	commentGroup := v1.Group("/comments")
 	{
 		commentGroup.POST("", commentHandler.CreateComment)
+		commentGroup.PUT("", commentHandler.UpdateComment)
 	}
 
 	tagGroup := v1.Group("/tags")

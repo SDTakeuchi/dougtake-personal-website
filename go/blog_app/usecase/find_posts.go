@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"blog_app/domain/model"
-	"blog_app/domain/model/time"
+	modeltime "blog_app/domain/model/time"
 	"blog_app/domain/repository"
 	"context"
 )
@@ -25,15 +25,15 @@ type (
 	commentOutput struct {
 		ID        uint64
 		Body      string
-		CreatedAt time.Time
-		UpdatedAt time.Time
+		CreatedAt modeltime.Time
+		UpdatedAt modeltime.Time
 	}
 	postOutput struct {
 		ID        uint64
 		Title     string
 		Body      string
-		CreatedAt time.Time
-		UpdatedAt time.Time
+		CreatedAt modeltime.Time
+		UpdatedAt modeltime.Time
 		Tags      []tagOutput
 		Comments  []commentOutput
 	}
@@ -138,8 +138,8 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 				commentOutput{
 					ID:        c.ID(),
 					Body:      c.Body(),
-					CreatedAt: time.Time{Time: c.CreatedAt()},
-					UpdatedAt: time.Time{Time: c.UpdatedAt()},
+					CreatedAt: modeltime.Time{Time: c.CreatedAt()},
+					UpdatedAt: modeltime.Time{Time: c.UpdatedAt()},
 				},
 			)
 		}
@@ -151,8 +151,8 @@ func (u *findPostsImpl) Execute(ctx context.Context, input FindPostsInput) (*Fin
 				ID:        p.ID(),
 				Title:     p.Title(),
 				Body:      p.Body(),
-				CreatedAt: time.Time{Time: p.CreatedAt()},
-				UpdatedAt: time.Time{Time: p.UpdatedAt()},
+				CreatedAt: modeltime.Time{Time: p.CreatedAt()},
+				UpdatedAt: modeltime.Time{Time: p.UpdatedAt()},
 				Tags:      tags,
 				Comments:  comments,
 			},

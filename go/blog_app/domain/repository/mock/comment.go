@@ -79,6 +79,21 @@ func (mr *MockCommentMockRecorder) FindByPostID(ctx, postID interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByPostID", reflect.TypeOf((*MockComment)(nil).FindByPostID), ctx, postID)
 }
 
+// Get mocks base method.
+func (m *MockComment) Get(ctx context.Context, id uint64) (model.Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", ctx, id)
+	ret0, _ := ret[0].(model.Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockCommentMockRecorder) Get(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockComment)(nil).Get), ctx, id)
+}
+
 // Update mocks base method.
 func (m *MockComment) Update(ctx context.Context, comment model.Comment) (model.Comment, error) {
 	m.ctrl.T.Helper()
