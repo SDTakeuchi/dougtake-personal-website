@@ -4,6 +4,8 @@ import (
 	"blog_app/adapter/config"
 	"blog_app/adapter/constants"
 	"blog_app/domain/model"
+	"blog_app/domain/model/auth"
+	"blog_app/domain/model/password"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,9 +34,24 @@ func createErrResponse(c *gin.Context, err error) {
 	case errFailedToBindQuery:
 		statusCode = http.StatusBadRequest
 		msg = constants.FailedToBindQuery
+
+	case password.ErrIncorrectPassword:
+		statusCode = http.StatusBadRequest
+		msg = constants.IncorrectPassword
+	case password.ErrPasswordTooShort:
+		statusCode = http.StatusBadRequest
+		msg = constants.PasswordTooShort
+	case auth.ErrInvalidToken:
+		statusCode = http.StatusUnauthorized
+		msg = constants.InvalidToken
+	case auth.ErrExpiredToken:
+		statusCode = http.StatusUnauthorized
+		msg = constants.ExpiredToken
+
 	case model.ErrConstructor:
 		statusCode = http.StatusBadRequest
 		msg = constants.InvalidParams
+
 	default:
 		statusCode = http.StatusInternalServerError
 		msg = constants.DefaultErrorMessage

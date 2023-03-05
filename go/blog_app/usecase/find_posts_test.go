@@ -1,17 +1,13 @@
 package usecase
 
 import (
-	modelimpl "blog_app/adapter/domain_impl/model"
-	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
 	modeltime "blog_app/domain/model/time"
-	"blog_app/domain/model/uuid"
 	mockrepo "blog_app/domain/repository/mock"
+	testutil "blog_app/util/test"
 	"context"
-	"math/rand"
 	"reflect"
 	"testing"
-	"time"
 
 	"github.com/golang/mock/gomock"
 	"gorm.io/gorm"
@@ -23,7 +19,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 		input FindPostsInput
 	}
 
-	randomTags := genRandomTags(2)
+	randomTags := testutil.GenRandomTags(2)
 
 	tagIDs := func() []uint64 {
 		var ids []uint64
@@ -32,7 +28,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 		}
 		return ids
 	}()
-	randomPosts := genRandomPosts(2, tagIDs)
+	randomPosts := testutil.GenRandomPosts(2, tagIDs)
 
 	postIDs := func() []uint64 {
 		var ids []uint64
@@ -41,7 +37,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 		}
 		return ids
 	}()
-	randomComments := genRandomComments(4, postIDs)
+	randomComments := testutil.GenRandomComments(4, postIDs)
 
 	tests := []struct {
 		name              string
@@ -362,63 +358,4 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 			}
 		})
 	}
-}
-
-func genRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
-	var posts []model.Post
-	for i := 1; i < wantCount+1; i++ {
-		p := postgres.Post{
-			ID:        uint64(i),
-			Title:     genRandomChars(30),
-			Body:      genRandomChars(2000),
-			UserID:    uuid.New(),
-			TagIDs:    tagIDs,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		}
-		posts = append(posts, modelimpl.PostFromRecord(p))
-	}
-	return posts
-}
-
-func genRandomTags(wantCount int) []model.Tag {
-	var tags []model.Tag
-	for i := 1; i < wantCount+1; i++ {
-		t := postgres.Tag{
-			ID:   uint64(i),
-			Name: genRandomChars(10),
-		}
-		tags = append(tags, modelimpl.TagFromRecord(t))
-	}
-	return tags
-}
-
-func genRandomComments(wantCount int, postIDs []uint64) []model.Comment {
-	var comments []model.Comment
-	for i := 1; i < wantCount+1; i++ {
-
-		postID := len(postIDs)
-		if i < len(postIDs) {
-			postID = i
-		}
-
-		pgC := postgres.Comment{
-			ID:        uint64(i),
-			Body:      genRandomChars(200),
-			PostID:    uint64(postID),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		}
-		comments = append(comments, modelimpl.CommentFromRecord(pgC))
-	}
-	return comments
-}
-
-func genRandomChars(count int) string {
-	var res string
-	chars := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", ",", ".", "あ", "ん"}
-	for i := 0; i < count; i++ {
-		res += chars[rand.Intn(len(chars))]
-	}
-	return res
 }

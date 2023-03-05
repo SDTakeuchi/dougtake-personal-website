@@ -3,6 +3,7 @@ package usecase
 import (
 	"blog_app/domain/model"
 	mockrepo "blog_app/domain/repository/mock"
+	testutil "blog_app/util/test"
 	"context"
 	"reflect"
 	"testing"
@@ -16,8 +17,7 @@ func Test_getTagsImpl_Execute(t *testing.T) {
 		ctx   context.Context
 		input GetTagsInput
 	}
-
-	randomTags := genRandomTags(3)
+	randomTags := testutil.GenRandomTags(3)
 
 	tests := []struct {
 		name          string

@@ -1,9 +1,13 @@
 package usecase
 
 import (
+	"blog_app/adapter/config"
+	"blog_app/domain/model/auth"
 	"blog_app/domain/model/password"
+	"blog_app/domain/model/uuid"
 	"blog_app/domain/repository"
 	"context"
+	"time"
 )
 
 type (
@@ -15,22 +19,30 @@ type (
 		RawPassword string
 	}
 	LoginOutput struct {
-		sessionKey []byte
+		AccessToken           string
+		AccessTokenExpiresAt  time.Time
+		RefreshToken          string
+		RefreshTokenExpiresAt time.Time
+		UserID                uuid.UUID
 	}
 	loginImpl struct {
-		userRepo repository.User
+		tokenIssuer auth.TokenIssuer
+		userRepo    repository.User
 	}
 )
 
 func NewLogin(
+	tokenIssuer auth.TokenIssuer,
 	userRepo repository.User,
 ) Login {
 	return &loginImpl{
-		userRepo: userRepo,
+		tokenIssuer: tokenIssuer,
+		userRepo:    userRepo,
 	}
 }
 
 func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput, error) {
+	// search user
 	user, err := u.userRepo.GetByEmail(
 		ctx,
 		input.Email,
@@ -40,12 +52,33 @@ func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput
 	}
 
 	if err := password.Equals(
-		user.HashedPassword(),
+		user.Password().String(),
 		input.RawPassword,
 	); err != nil {
 		return nil, err
 	}
+	// issue token
+	accessToken, accessPayload, err := u.tokenIssuer.Create(
+		user.ID(),
+		config.Get().Auth.AccessTokenDuration,
+	)
+	if err != nil {
+		return nil, err
+	}
 
-	return &LoginOutput{tags}, nil
+	refreshToken, refreshPayload, err := u.tokenIssuer.Create(
+		user.ID(),
+		config.Get().Auth.RefreshTokenDuration,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &LoginOutput{
+		AccessToken:           accessToken,
+		AccessTokenExpiresAt:  accessPayload.ExpiresAt(),
+		RefreshToken:          refreshToken,
+		RefreshTokenExpiresAt: refreshPayload.ExpiresAt(),
+		UserID:                user.ID(),
+	}, nil
 }
-

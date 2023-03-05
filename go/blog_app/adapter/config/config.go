@@ -36,8 +36,8 @@ type (
 
 	Auth struct {
 		SecretKey            string        `required:"true" yaml:"secret_key"`
-		AccessTokenDuration  time.Duration `required:"true" yaml:"access_token_duration"`
-		RefreshTokenDuration time.Duration `required:"true" yaml:"refresh_token_duration"`
+		AccessTokenDuration  time.Duration `required:"true" yaml:"access_token_duration" default:"10m"`
+		RefreshTokenDuration time.Duration `required:"true" yaml:"refresh_token_duration" default:"24h"`
 		MinSecretKeySize     int           `required:"true" yaml:"min_secret_key_size"`
 	}
 

@@ -8,6 +8,7 @@ import (
 
 func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	var (
+		authHandler    = registry.AuthHandler
 		postHandler    = registry.PostHandler
 		commentHandler = registry.CommentHandler
 		tagHandler     = registry.TagHandler
@@ -15,6 +16,12 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 		apiGroup = engine.Group("/api")
 		v1       = apiGroup.Group("/v1")
 	)
+
+	authGroup := v1.Group("/auth")
+	{
+		authGroup.POST("/signup", authHandler.Signup)
+		authGroup.POST("/login", authHandler.Login)
+	}
 
 	postGroup := v1.Group("/posts")
 	{

@@ -11,21 +11,27 @@ import (
 	"blog_app/adapter/handler"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/adapter/registry"
+	"blog_app/domain/model/auth"
 	"blog_app/usecase"
 )
 
 // Injectors from injector.go:
 
-func initialize(db *postgres.DB) registry.Registry {
+func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry {
+	user := repository.NewUserRepository(db)
+	login := usecase.NewLogin(tokenIssuer, user)
+	signup := usecase.NewSignup(user)
+	authHandler := handler.NewAuthHandler(login, signup)
 	post := repository.NewPostRepository(db)
 	tag := repository.NewTagRepository(db)
 	comment := repository.NewCommentRepository(db)
 	findPosts := usecase.NewFindPosts(post, tag, comment)
 	postHandler := handler.NewPostHandler(findPosts)
 	createComment := usecase.NewCreateComment(post, comment)
-	commentHandler := handler.NewCommentHandler(createComment)
+	updateComment := usecase.NewUpdateComment(comment)
+	commentHandler := handler.NewCommentHandler(createComment, updateComment)
 	getTags := usecase.NewGetTags(tag)
 	tagHandler := handler.NewTagHandler(getTags)
-	registryRegistry := registry.NewRegistry(db, postHandler, commentHandler, tagHandler)
+	registryRegistry := registry.NewRegistry(db, authHandler, postHandler, commentHandler, tagHandler)
 	return registryRegistry
 }

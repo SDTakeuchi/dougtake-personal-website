@@ -6,6 +6,7 @@ import (
 	"blog_app/domain/model"
 	"blog_app/domain/model/password"
 	"blog_app/domain/model/uuid"
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -39,15 +40,18 @@ func GenRandomTags(wantCount int) []model.Tag {
 	return tags
 }
 
+var SamplePassword = "a9#jL0s8hbFSiolk"
+
 func GenRandomUsers(wantCount int) []model.User {
 	var users []model.User
-	samplePassword, _ := password.NewPassword("a9#jL0s8hbFSiolk")
+	samplePassword, _ := password.NewPassword(SamplePassword)
 	hashedPassword := samplePassword.HashedPassword()
 	for i := 1; i < wantCount+1; i++ {
+		email := fmt.Sprintf("%sABC@email.com", GenRandomChars(20))
 		u := postgres.User{
-			ID:             uuid.New(),
-			Name:           GenRandomChars(10),
-			Email:          GenRandomChars(20),
+			ID:       uuid.New(),
+			Name:     GenRandomChars(10),
+			Email:    email,
 			Password: hashedPassword,
 		}
 		users = append(users, modelimpl.UserFromRecord(u))

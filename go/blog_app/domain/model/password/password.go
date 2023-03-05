@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrPasswordTooShort = errors.New("password must be at least 8 characters")
+	ErrPasswordTooShort  = errors.New("password must be at least 8 characters")
 	ErrIncorrectPassword = errors.New("wrong password")
 )
 
@@ -16,6 +16,9 @@ type Password struct {
 	password       string
 	hashedPassword string
 }
+
+// String() is an alias for Password.HashedPassword()
+func (p Password) String() string { return p.HashedPassword() }
 
 func (p *Password) HashedPassword() string { return p.hashedPassword }
 
@@ -26,19 +29,26 @@ func validatePassword(p string) error {
 	return nil
 }
 
-func NewPassword(p string) (*Password, error) {
-	if err := validatePassword(p); err != nil {
+func NewPassword(rawPassword string) (*Password, error) {
+	if err := validatePassword(rawPassword); err != nil {
 		return nil, err
 	}
-	hashedPassword, err := hash(p)
+	hashedPassword, err := hash(rawPassword)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Password{
-		password:       p,
+		password:       rawPassword,
 		hashedPassword: hashedPassword,
 	}, nil
+}
+
+func ParseHashedPassword(hp string) *Password {
+	return &Password{
+		"",
+		hp,
+	}
 }
 
 func Equals(hashedPassword, incomingPassword string) error {

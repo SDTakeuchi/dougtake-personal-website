@@ -6,7 +6,6 @@ package mock_repository
 
 import (
 	model "blog_app/domain/model"
-	uuid "blog_app/domain/model/uuid"
 	context "context"
 	reflect "reflect"
 
@@ -36,20 +35,6 @@ func (m *MockUser) EXPECT() *MockUserMockRecorder {
 	return m.recorder
 }
 
-// Authenticate mocks base method.
-func (m *MockUser) Authenticate(ctx context.Context, user model.User, inputPassword string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Authenticate", ctx, user, inputPassword)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Authenticate indicates an expected call of Authenticate.
-func (mr *MockUserMockRecorder) Authenticate(ctx, user, inputPassword interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Authenticate", reflect.TypeOf((*MockUser)(nil).Authenticate), ctx, user, inputPassword)
-}
-
 // Create mocks base method.
 func (m *MockUser) Create(ctx context.Context, user model.User) (model.User, error) {
 	m.ctrl.T.Helper()
@@ -65,46 +50,17 @@ func (mr *MockUserMockRecorder) Create(ctx, user interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUser)(nil).Create), ctx, user)
 }
 
-// Delete mocks base method.
-func (m *MockUser) Delete(ctx context.Context, id uuid.UUID) error {
+// GetByEmail mocks base method.
+func (m *MockUser) GetByEmail(ctx context.Context, email string) (model.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Delete indicates an expected call of Delete.
-func (mr *MockUserMockRecorder) Delete(ctx, id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUser)(nil).Delete), ctx, id)
-}
-
-// Get mocks base method.
-func (m *MockUser) Get(ctx context.Context, id uuid.UUID) (model.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, id)
+	ret := m.ctrl.Call(m, "GetByEmail", ctx, email)
 	ret0, _ := ret[0].(model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get.
-func (mr *MockUserMockRecorder) Get(ctx, id interface{}) *gomock.Call {
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUser)(nil).Get), ctx, id)
-}
-
-// Update mocks base method.
-func (m *MockUser) Update(ctx context.Context, user model.User) (model.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, user)
-	ret0, _ := ret[0].(model.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Update indicates an expected call of Update.
-func (mr *MockUserMockRecorder) Update(ctx, user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUser)(nil).Update), ctx, user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), ctx, email)
 }

@@ -4,6 +4,7 @@ import (
 	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/domain/model"
 	mockrepo "blog_app/domain/repository/mock"
+	testutil "blog_app/util/test"
 	"context"
 	"reflect"
 	"testing"
@@ -19,7 +20,7 @@ func Test_updateCommentImpl_Execute(t *testing.T) {
 		input UpdateCommentInput
 	}
 
-	randomTags := genRandomTags(2)
+	randomTags := testutil.GenRandomTags(2)
 
 	tagIDs := func() []uint64 {
 		var ids []uint64
@@ -28,7 +29,7 @@ func Test_updateCommentImpl_Execute(t *testing.T) {
 		}
 		return ids
 	}()
-	randomPosts := genRandomPosts(2, tagIDs)
+	randomPosts := testutil.GenRandomPosts(2, tagIDs)
 	postIDs := func() []uint64 {
 		var ids []uint64
 		for _, p := range randomPosts {
@@ -36,11 +37,11 @@ func Test_updateCommentImpl_Execute(t *testing.T) {
 		}
 		return ids
 	}()
-	randomComments := genRandomComments(4, postIDs)
+	randomComments := testutil.GenRandomComments(4, postIDs)
 
 	newCommentBodies := []string{
-		genRandomChars(100),
-		genRandomChars(150),
+		testutil.GenRandomChars(100),
+		testutil.GenRandomChars(150),
 	}
 	now := time.Now()
 

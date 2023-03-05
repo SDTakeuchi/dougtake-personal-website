@@ -2,6 +2,7 @@ package usecase
 
 import (
 	mockrepo "blog_app/domain/repository/mock"
+	testutil "blog_app/util/test"
 	"context"
 	"reflect"
 	"testing"
@@ -16,7 +17,7 @@ func Test_createCommentImpl_Execute(t *testing.T) {
 		input CreateCommentInput
 	}
 
-	randomTags := genRandomTags(2)
+	randomTags := testutil.GenRandomTags(2)
 
 	tagIDs := func() []uint64 {
 		var ids []uint64
@@ -25,7 +26,7 @@ func Test_createCommentImpl_Execute(t *testing.T) {
 		}
 		return ids
 	}()
-	randomPosts := genRandomPosts(2, tagIDs)
+	randomPosts := testutil.GenRandomPosts(2, tagIDs)
 	postIDs := func() []uint64 {
 		var ids []uint64
 		for _, p := range randomPosts {
@@ -33,7 +34,7 @@ func Test_createCommentImpl_Execute(t *testing.T) {
 		}
 		return ids
 	}()
-	randomComments := genRandomComments(4, postIDs)
+	randomComments := testutil.GenRandomComments(4, postIDs)
 
 	tests := []struct {
 		name              string
