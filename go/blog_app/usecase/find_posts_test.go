@@ -6,6 +6,7 @@ import (
 	mockrepo "blog_app/domain/repository/mock"
 	testutil "blog_app/util/test"
 	"context"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -148,7 +149,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[0].Title(),
 						randomPosts[0].Body(),
 						modeltime.Time{Time: randomPosts[0].CreatedAt()},
-						modeltime.Time{Time: randomPosts[0].CreatedAt()},
+						modeltime.Time{Time: randomPosts[0].UpdatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -164,7 +165,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 								randomComments[0].ID(),
 								randomComments[0].Body(),
 								modeltime.Time{Time: randomComments[0].CreatedAt()},
-								modeltime.Time{Time: randomComments[0].CreatedAt()},
+								modeltime.Time{Time: randomComments[0].UpdatedAt()},
 							},
 						},
 					},
@@ -213,7 +214,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[0].Title(),
 						randomPosts[0].Body(),
 						modeltime.Time{Time: randomPosts[0].CreatedAt()},
-						modeltime.Time{Time: randomPosts[0].CreatedAt()},
+						modeltime.Time{Time: randomPosts[0].UpdatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -229,7 +230,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 								randomComments[0].ID(),
 								randomComments[0].Body(),
 								modeltime.Time{Time: randomComments[0].CreatedAt()},
-								modeltime.Time{Time: randomComments[0].CreatedAt()},
+								modeltime.Time{Time: randomComments[0].UpdatedAt()},
 							},
 						},
 					},
@@ -278,7 +279,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 						randomPosts[1].Title(),
 						randomPosts[1].Body(),
 						modeltime.Time{Time: randomPosts[1].CreatedAt()},
-						modeltime.Time{Time: randomPosts[1].CreatedAt()},
+						modeltime.Time{Time: randomPosts[1].UpdatedAt()},
 						[]tagOutput{
 							{
 								randomTags[0].ID(),
@@ -294,7 +295,7 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 								randomComments[2].ID(),
 								randomComments[2].Body(),
 								modeltime.Time{Time: randomComments[2].CreatedAt()},
-								modeltime.Time{Time: randomComments[2].CreatedAt()},
+								modeltime.Time{Time: randomComments[2].UpdatedAt()},
 							},
 						},
 					},
@@ -354,6 +355,12 @@ func Test_findPostsImpl_Execute(t *testing.T) {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
+				if got.Posts[0].Title != tt.want.Posts[0].Title {
+					fmt.Println("title different")
+				}
+				if got.Posts[0].Body != tt.want.Posts[0].Body {
+					fmt.Println("body different")
+				}
 				t.Errorf("findPostsImpl.Execute() = %+v, want %+v", got, tt.want)
 			}
 		})
