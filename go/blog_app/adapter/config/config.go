@@ -34,7 +34,7 @@ type (
 		Port string `required:"true" yaml:"port" default:"8080"`
 	}
 
-	Auth struct {
+	Token struct {
 		SecretKey            string        `required:"true" yaml:"secret_key"`
 		AccessTokenDuration  time.Duration `required:"true" yaml:"access_token_duration" default:"10m"`
 		RefreshTokenDuration time.Duration `required:"true" yaml:"refresh_token_duration" default:"24h"`
@@ -46,7 +46,7 @@ type (
 		DB       DB       `yaml:"db"`
 		Frontend Frontend `yaml:"frontend"`
 		API      API      `yaml:"api"`
-		Auth     Auth     `yaml:"auth"`
+		Token    Token    `yaml:"token"`
 	}
 )
 

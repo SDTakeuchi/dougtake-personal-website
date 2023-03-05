@@ -5,10 +5,10 @@ package main
 
 import (
 	"blog_app/adapter/domain_impl/repository"
-	"blog_app/domain/model/auth"
 	"blog_app/adapter/handler"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/adapter/registry"
+	"blog_app/domain/model/auth"
 	"blog_app/usecase"
 
 	"github.com/google/wire"

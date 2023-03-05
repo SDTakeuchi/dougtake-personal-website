@@ -19,7 +19,7 @@ type JWTIssuer struct {
 }
 
 func NewJWTIssuer(secretKey string) (auth.TokenIssuer, error) {
-	minSecretKeySize := config.Get().Auth.MinSecretKeySize
+	minSecretKeySize := config.Get().Token.MinSecretKeySize
 
 	if len(secretKey) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
@@ -31,9 +31,6 @@ func (issuer *JWTIssuer) Create(
 	userID uuid.UUID,
 	duration time.Duration,
 ) (string, auth.Payload, error) {
-	if duration == time.Duration(0) {
-		duration = time.Duration(time.Minute)
-	}
 	p := NewPayload(userID, duration)
 	claims := ClaimsFromPayload(p)
 	token := jwt.NewWithClaims(jwtMethod, claims)

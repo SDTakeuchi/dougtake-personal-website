@@ -17,7 +17,7 @@ func main() {
 	// connect DB
 	db := postgres.ConnectDB()
 
-	jwSecretKey := config.Get().Auth.SecretKey
+	jwSecretKey := config.Get().Token.SecretKey
 	jwtIssuer, err := auth.NewJWTIssuer(jwSecretKey)
 	if err != nil {
 		log.Fatalf("initializing JWTIssuer Failed: %v", err.Error())
