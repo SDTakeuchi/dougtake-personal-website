@@ -17,16 +17,16 @@ type (
 	}
 
 	createCommentRequest struct {
-		PostID uint64 `form:"post_id"`
-		Body   string `form:"body"`
+		PostID uint64 `form:"post_id" json:"post_id"`
+		Body   string `form:"body" json:"body"`
 	}
 	createCommentResponse struct {
 		ID uint64 `json:"id"`
 	}
 
 	updateCommentRequest struct {
-		ID   uint64 `form:"id"`
-		Body string `form:"body"`
+		ID   uint64 `form:"id" json:"id"`
+		Body string `form:"body" json:"body"`
 	}
 	updateCommentResponse struct {
 		ID uint64 `json:"id"`
@@ -36,7 +36,7 @@ type (
 func NewCommentHandler(
 	createCommentUsecase usecase.CreateComment,
 	updateCommentResponse usecase.UpdateComment,
-	) CommentHandler {
+) CommentHandler {
 	return &commentHandler{
 		createCommentUsecase,
 		updateCommentResponse,

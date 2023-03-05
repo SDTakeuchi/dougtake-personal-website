@@ -1,6 +1,7 @@
 package server
 
 import (
+	"blog_app/adapter/handler/middleware"
 	"blog_app/adapter/registry"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,8 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 		v1       = apiGroup.Group("/v1")
 	)
 
+	// authedRoutes := v1.Group("/").Use(middleware.IsLogedin(registry.TokenIssuer))
+
 	authGroup := v1.Group("/auth")
 	{
 		authGroup.POST("/signup", authHandler.Signup)
@@ -28,7 +31,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 		postGroup.GET("", postHandler.GetPosts)
 	}
 
-	commentGroup := v1.Group("/comments")
+	commentGroup := v1.Group("/comments").Use(middleware.IsLogedin(registry.TokenIssuer))
 	{
 		commentGroup.POST("", commentHandler.CreateComment)
 		commentGroup.PUT("", commentHandler.UpdateComment)

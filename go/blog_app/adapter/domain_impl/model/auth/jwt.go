@@ -31,6 +31,10 @@ func (issuer *JWTIssuer) Create(
 	userID uuid.UUID,
 	duration time.Duration,
 ) (string, auth.Payload, error) {
+	// test code cannot read config, so provide default value here
+	if duration == time.Duration(0) {
+		duration = time.Minute
+	}
 	p := NewPayload(userID, duration)
 	claims := ClaimsFromPayload(p)
 	token := jwt.NewWithClaims(jwtMethod, claims)
