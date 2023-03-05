@@ -3,7 +3,6 @@ package auth
 import (
 	"blog_app/domain/model/auth"
 	testutil "blog_app/util/test"
-	"fmt"
 	"testing"
 	"time"
 
@@ -34,8 +33,6 @@ func TestJWTIssuer(t *testing.T) {
 	require.Equal(t, user.ID(), payload.UserID())
 	require.WithinDuration(t, issuedAt, payload.IssuedAt(), time.Second)
 	require.WithinDuration(t, expiresAt, payload.ExpiresAt(), time.Second)
-	fmt.Printf("payload: %+v\n", payload)
-	fmt.Printf("token: %+v\n", token)
 }
 
 func TestExpiredJWTToken(t *testing.T) {
