@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"blog_app/adapter/config"
-	authmodel "blog_app/adapter/domain_impl/model/auth"
 	"blog_app/domain/model/auth"
 	"blog_app/domain/model/password"
 	"blog_app/domain/model/uuid"
@@ -12,42 +11,36 @@ import (
 )
 
 type (
-	Login interface {
-		Execute(ctx context.Context, input LoginInput) (*LoginOutput, error)
+	RenewToken interface {
+		Execute(ctx context.Context, input RenewTokenInput) (*RenewTokenOutput, error)
 	}
-	LoginInput struct {
-		Email       string
-		RawPassword string
-		ClientIP    string
-		UserAgent   string
+	RenewTokenInput struct {
+		token string
 	}
-	LoginOutput struct {
+	RenewTokenOutput struct {
 		AccessToken           string
 		AccessTokenExpiresAt  time.Time
 		RefreshToken          string
 		RefreshTokenExpiresAt time.Time
 		UserID                uuid.UUID
 	}
-	loginImpl struct {
+	renewTokenImpl struct {
 		tokenIssuer auth.TokenIssuer
 		userRepo    repository.User
-		sessionRepo repository.Session
 	}
 )
 
-func NewLogin(
+func NewRenewToken(
 	tokenIssuer auth.TokenIssuer,
 	userRepo repository.User,
-	sessionRepo repository.Session,
-) Login {
-	return &loginImpl{
+) RenewToken {
+	return &renewTokenImpl{
 		tokenIssuer: tokenIssuer,
 		userRepo:    userRepo,
-		sessionRepo: sessionRepo,
 	}
 }
 
-func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput, error) {
+func (u *renewTokenImpl) Execute(ctx context.Context, input RenewTokenInput) (*RenewTokenOutput, error) {
 	// search user
 	user, err := u.userRepo.GetByEmail(
 		ctx,
@@ -80,48 +73,11 @@ func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput
 		return nil, err
 	}
 
-	err = createSession(
-		ctx,
-		u.sessionRepo,
-		refreshToken,
-		refreshPayload,
-		input.ClientIP,
-		input.UserAgent,
-	)
-
-	return &LoginOutput{
+	return &RenewTokenOutput{
 		AccessToken:           accessToken,
 		AccessTokenExpiresAt:  accessPayload.ExpiresAt(),
 		RefreshToken:          refreshToken,
 		RefreshTokenExpiresAt: refreshPayload.ExpiresAt(),
 		UserID:                user.ID(),
 	}, nil
-}
-
-func createSession(
-	ctx context.Context,
-	sessionRepo repository.Session,
-	refreshToken string,
-	payload auth.Payload,
-	clientIP string,
-	userAgent string,
-) error {
-	// token is refresh token
-	session, err := authmodel.NewSession(
-		payload.ID(),
-		payload.UserID(),
-		refreshToken,
-		userAgent,
-		clientIP,
-		payload.ExpiresAt(),
-		payload.IssuedAt(),
-	)
-	if err != nil {
-		return err
-	}
-	_, err = sessionRepo.Create(ctx, session)
-	if err != nil {
-		return err
-	}
-	return nil
 }
