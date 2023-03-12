@@ -69,7 +69,7 @@ func Test_renewTokenImpl_Execute(t *testing.T) {
 								ID:           refreshTokenPayload.ID().String(),
 								UserID:       users[0].ID().String(),
 								RefreshToken: refreshToken,
-								ExpiresAt:    now.Add(config.Get().Token.RefreshTokenDuration),
+								ExpiresAt:    now.Add(time.Minute),
 								CreatedAt:    now,
 							},
 						), nil)
@@ -115,7 +115,7 @@ func Test_renewTokenImpl_Execute(t *testing.T) {
 								ID:           expiredRrefreshTokenPayload.ID().String(),
 								UserID:       users[0].ID().String(),
 								RefreshToken: refreshToken,
-								ExpiresAt:    now.Add(config.Get().Token.RefreshTokenDuration),
+								ExpiresAt:    now.Add(time.Minute),
 								CreatedAt:    now,
 							},
 						), nil)
