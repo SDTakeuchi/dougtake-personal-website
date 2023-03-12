@@ -24,12 +24,13 @@ func Test_loginImpl_Execute(t *testing.T) {
 	tokenIssuer, _ := authimpl.NewJWTIssuer("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	tests := []struct {
-		name           string
-		args           args
-		buildStubsUser func(mockUser *mockrepo.MockUser)
-		tokenIssuer    auth.TokenIssuer
-		want           *LoginOutput
-		wantErr        bool
+		name              string
+		args              args
+		buildStubsUser    func(mockUser *mockrepo.MockUser)
+		buildStubsSession func(mockUser *mockrepo.MockSession)
+		tokenIssuer       auth.TokenIssuer
+		want              *LoginOutput
+		wantErr           bool
 	}{
 		{
 			"success",
@@ -45,6 +46,13 @@ func Test_loginImpl_Execute(t *testing.T) {
 					GetByEmail(gomock.Any(), randomUsers[0].Email()).
 					Times(1).
 					Return(randomUsers[0], nil)
+			},
+			func(mockUser *mockrepo.MockSession) {
+				mockUser.EXPECT().
+					Create(gomock.Any(), gomock.Any()).
+					Times(1).
+					// returns session record in reality
+					Return(nil, nil)
 			},
 			tokenIssuer,
 			&LoginOutput{
@@ -67,6 +75,11 @@ func Test_loginImpl_Execute(t *testing.T) {
 					Times(1).
 					Return(nil, gorm.ErrRecordNotFound)
 			},
+			func(mockUser *mockrepo.MockSession) {
+				mockUser.EXPECT().
+					Create(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
 			tokenIssuer,
 			nil,
 			true,
@@ -86,6 +99,11 @@ func Test_loginImpl_Execute(t *testing.T) {
 					Times(1).
 					Return(randomUsers[1], nil)
 			},
+			func(mockUser *mockrepo.MockSession) {
+				mockUser.EXPECT().
+					Create(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
 			tokenIssuer,
 			nil,
 			true,
@@ -97,8 +115,10 @@ func Test_loginImpl_Execute(t *testing.T) {
 
 			mockUser := mockrepo.NewMockUser(ctrl)
 			tt.buildStubsUser(mockUser)
+			mockSession := mockrepo.NewMockSession(ctrl)
+			tt.buildStubsSession(mockSession)
 
-			login := NewLogin(tt.tokenIssuer, mockUser)
+			login := NewLogin(tt.tokenIssuer, mockUser, mockSession)
 
 			got, err := login.Execute(tt.args.ctx, tt.args.input)
 
@@ -106,14 +126,14 @@ func Test_loginImpl_Execute(t *testing.T) {
 				t.Errorf("loginImpl.Execute() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !isValidResponse(got, tt.want) {
+			if !isValidLoginResponse(got, tt.want) {
 				t.Errorf("loginImpl.Execute() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func isValidResponse(got, want *LoginOutput) bool {
+func isValidLoginResponse(got, want *LoginOutput) bool {
 	// if both got and want are nil, comparison is not needed anymore
 	if got == nil && want == nil {
 		return true

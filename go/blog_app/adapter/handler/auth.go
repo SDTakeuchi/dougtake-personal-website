@@ -2,6 +2,7 @@ package handler
 
 import (
 	"blog_app/usecase"
+	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,10 +12,12 @@ type (
 	AuthHandler interface {
 		Signup(c *gin.Context)
 		Login(c *gin.Context)
+		RenewToken(c *gin.Context)
 	}
 	authHandler struct {
-		loginUsecase  usecase.Login
-		signupUsecase usecase.Signup
+		loginUsecase      usecase.Login
+		signupUsecase     usecase.Signup
+		renewTokenUsecase usecase.RenewToken
 	}
 
 	loginRequest struct {
@@ -39,15 +42,25 @@ type (
 		Name  string `json:"name"`
 		Email string `json:"email"`
 	}
+
+	renewTokenRequest struct {
+		RefreshToken string `json:"refresh_token"`
+	}
+	renewTokenResponse struct {
+		AccessToken          string    `json:"access_token"`
+		AccessTokenExpiresAt time.Time `json:"access_token_exp"`
+	}
 )
 
 func NewAuthHandler(
 	loginUsecase usecase.Login,
 	signupUsecase usecase.Signup,
+	renewTokenUsecase usecase.RenewToken,
 ) AuthHandler {
 	return &authHandler{
-		loginUsecase:  loginUsecase,
-		signupUsecase: signupUsecase,
+		loginUsecase:      loginUsecase,
+		signupUsecase:     signupUsecase,
+		renewTokenUsecase: renewTokenUsecase,
 	}
 }
 
@@ -62,6 +75,8 @@ func (h *authHandler) Login(c *gin.Context) {
 		usecase.LoginInput{
 			Email:       params.Email,
 			RawPassword: params.Password,
+			ClientIP:    c.ClientIP(),
+			UserAgent:   c.Request.UserAgent(),
 		},
 	)
 	if err != nil {
@@ -72,7 +87,7 @@ func (h *authHandler) Login(c *gin.Context) {
 		AccessToken:           output.AccessToken,
 		AccessTokenExpiresAt:  output.AccessTokenExpiresAt,
 		RefreshToken:          output.RefreshToken,
-		RefreshTokenExpiresAt: output.AccessTokenExpiresAt,
+		RefreshTokenExpiresAt: output.RefreshTokenExpiresAt,
 		UserID:                output.UserID.String(),
 	}
 	createJSONResponse(c, resp)
@@ -100,6 +115,31 @@ func (h *authHandler) Signup(c *gin.Context) {
 		output.ID.String(),
 		output.Name,
 		output.Email,
+	}
+	createJSONResponse(c, resp)
+}
+
+func (h *authHandler) RenewToken(c *gin.Context) {
+	params := renewTokenRequest{}
+	if err := c.Bind(&params); err != nil {
+		createErrResponse(c, errFailedToBindQuery)
+		return
+	}
+	fmt.Println("params.RefreshToken")
+	fmt.Println(params.RefreshToken)
+	output, err := h.renewTokenUsecase.Execute(
+		c,
+		usecase.RenewTokenInput{
+			Token: params.RefreshToken,
+		},
+	)
+	if err != nil {
+		createErrResponse(c, err)
+		return
+	}
+	resp := renewTokenResponse{
+		output.AccessToken,
+		output.AccessTokenExpiresAt,
 	}
 	createJSONResponse(c, resp)
 }

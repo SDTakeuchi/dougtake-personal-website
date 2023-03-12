@@ -19,9 +19,11 @@ import (
 
 func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry {
 	user := repository.NewUserRepository(db)
-	login := usecase.NewLogin(tokenIssuer, user)
+	session := repository.NewSessionRepository(db)
+	login := usecase.NewLogin(tokenIssuer, user, session)
 	signup := usecase.NewSignup(user)
-	authHandler := handler.NewAuthHandler(login, signup)
+	renewToken := usecase.NewRenewToken(tokenIssuer, session)
+	authHandler := handler.NewAuthHandler(login, signup, renewToken)
 	post := repository.NewPostRepository(db)
 	tag := repository.NewTagRepository(db)
 	comment := repository.NewCommentRepository(db)

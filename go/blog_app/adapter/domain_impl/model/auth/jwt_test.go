@@ -20,7 +20,7 @@ func TestJWTIssuer(t *testing.T) {
 	issuedAt := time.Now()
 	expiresAt := issuedAt.Add(duration)
 
-	token, payload, err := tokenIssuer.Create(user.ID(), duration)
+	token, payload, err := tokenIssuer.Create(user.ID(), auth.AccessToken, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
 	require.NotEmpty(t, token)
@@ -40,7 +40,7 @@ func TestExpiredJWTToken(t *testing.T) {
 	require.NoError(t, err)
 
 	user := testutil.GenRandomUsers(1)[0]
-	token, payload, err := tokenIssuer.Create(user.ID(), -time.Minute)
+	token, payload, err := tokenIssuer.Create(user.ID(), auth.AccessToken, -time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
 	require.NotEmpty(t, token)
@@ -53,7 +53,7 @@ func TestExpiredJWTToken(t *testing.T) {
 
 func TestInvalidJWTTokenAlgNone(t *testing.T) {
 	user := testutil.GenRandomUsers(1)[0]
-	payload := NewPayload(user.ID(), time.Minute)
+	payload := NewPayload(user.ID(), auth.AccessToken, time.Minute)
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodNone, ClaimsFromPayload(payload))
 	// UnsafeAllowNoneSignatureType should be only used for testing purposes because it is not safe

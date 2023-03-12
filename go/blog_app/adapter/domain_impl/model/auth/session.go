@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model/auth"
 	"blog_app/domain/model/uuid"
-	"context"
 	"time"
 )
 
@@ -53,4 +53,31 @@ func NewSession(
 		return nil, err
 	}
 	return s, nil
+}
+
+func SessionFromRecord(r postgres.Session) auth.Session {
+	// assume ids are always parsable
+	id, _ := uuid.Parse(r.ID)
+	userIDd, _ := uuid.Parse(r.UserID)
+	return &session{
+		id:           id,
+		userID:       userIDd,
+		refreshToken: r.RefreshToken,
+		userAgent:    r.UserAgent,
+		clientIP:     r.ClientIP,
+		expiresAt:    r.ExpiresAt,
+		createdAt:    r.CreatedAt,
+	}
+}
+
+func SessionToRecord(m auth.Session) postgres.Session {
+	return postgres.Session{
+		ID:           m.ID().String(),
+		UserID:       m.UserID().String(),
+		RefreshToken: m.RefreshToken(),
+		UserAgent:    m.UserAgent(),
+		ClientIP:     m.ClientIP(),
+		ExpiresAt:    m.ExpiresAt(),
+		CreatedAt:    m.CreatedAt(),
+	}
 }

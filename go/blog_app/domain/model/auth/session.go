@@ -8,13 +8,12 @@ import (
 )
 
 type Session interface {
-	// ID originally comes from refresh token's id
+	// ID originally comes from refresh token's payload id
 	ID() uuid.UUID
 	UserID() uuid.UUID
 	RefreshToken() string
 	UserAgent() string
 	ClientIP() string
-	// IsBlocked()    bool
 	ExpiresAt() time.Time
 	CreatedAt() time.Time
 }

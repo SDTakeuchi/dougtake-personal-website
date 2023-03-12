@@ -66,6 +66,7 @@ func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput
 	// issue token
 	accessToken, accessPayload, err := u.tokenIssuer.Create(
 		user.ID(),
+		auth.AccessToken,
 		config.Get().Token.AccessTokenDuration,
 	)
 	if err != nil {
@@ -74,6 +75,7 @@ func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput
 
 	refreshToken, refreshPayload, err := u.tokenIssuer.Create(
 		user.ID(),
+		auth.RefreshToken,
 		config.Get().Token.RefreshTokenDuration,
 	)
 	if err != nil {
@@ -88,6 +90,9 @@ func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput
 		input.ClientIP,
 		input.UserAgent,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	return &LoginOutput{
 		AccessToken:           accessToken,

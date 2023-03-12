@@ -24,6 +24,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	{
 		authGroup.POST("/signup", authHandler.Signup)
 		authGroup.POST("/login", authHandler.Login)
+		authGroup.POST("/renew_token", authHandler.RenewToken)
 	}
 
 	postGroup := v1.Group("/posts")

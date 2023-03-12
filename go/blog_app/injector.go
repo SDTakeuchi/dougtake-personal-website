@@ -19,8 +19,10 @@ func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry
 		// user
 		repository.NewUserRepository,
 		// auth
+		repository.NewSessionRepository,
 		usecase.NewSignup,
 		usecase.NewLogin,
+		usecase.NewRenewToken,
 		handler.NewAuthHandler,
 		// tag
 		repository.NewTagRepository,

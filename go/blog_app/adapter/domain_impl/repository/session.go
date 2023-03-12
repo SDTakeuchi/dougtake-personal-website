@@ -4,7 +4,6 @@ import (
 	modelimpl "blog_app/adapter/domain_impl/model/auth"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model/auth"
-	"blog_app/domain/model/uuid"
 	"blog_app/domain/repository"
 	"context"
 )
@@ -25,9 +24,9 @@ func (r *sessionRepository) Create(ctx context.Context, session auth.Session) (a
 	return modelimpl.SessionFromRecord(pSession), nil
 }
 
-func (r *sessionRepository) Get(ctx context.Context, id uuid.UUID) (auth.Session, error) {
+func (r *sessionRepository) Get(ctx context.Context, id string) (auth.Session, error) {
 	var pSession postgres.Session
-	if err := r.db.Conn.WithContext(ctx).Take(&pSession, id.String()).Error; err != nil {
+	if err := r.db.Conn.WithContext(ctx).Where("id = ?", id).Take(&pSession).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.SessionFromRecord(pSession), nil

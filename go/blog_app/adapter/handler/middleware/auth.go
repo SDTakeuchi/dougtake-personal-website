@@ -47,6 +47,12 @@ func IsLogedin(tokenIssuer auth.TokenIssuer) gin.HandlerFunc {
 			return
 		}
 
+		if payload.TokenType() != auth.AccessToken {
+			err := fmt.Errorf("use access token for login")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
 		c.Set(authorizationPayloadKey, payload)
 		c.Next()
 	}

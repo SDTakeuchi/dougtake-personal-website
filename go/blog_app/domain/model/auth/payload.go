@@ -13,8 +13,16 @@ var (
 	ErrInvalidToken = errors.New("token is invalid")
 )
 
+type TokenType int
+
+const (
+	AccessToken TokenType = iota + 1
+	RefreshToken
+)
+
 type Payload interface {
 	ID() uuid.UUID
+	TokenType() TokenType
 	UserID() uuid.UUID
 	IssuedAt() time.Time
 	ExpiresAt() time.Time

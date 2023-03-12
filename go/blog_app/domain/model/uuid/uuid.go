@@ -8,7 +8,7 @@ type UUID struct {
 	uuid.UUID
 }
 
-func (u *UUID) String() string {
+func (u UUID) String() string {
 	return u.UUID.String()
 }
 
