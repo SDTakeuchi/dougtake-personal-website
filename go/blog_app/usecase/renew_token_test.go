@@ -28,12 +28,12 @@ func Test_renewTokenImpl_Execute(t *testing.T) {
 	accessToken, _, _ := tokenIssuer.Create(
 		users[0].ID(),
 		auth.AccessToken,
-		config.Get().Token.AccessTokenDuration,
+		time.Minute,
 	)
 	refreshToken, refreshTokenPayload, _ := tokenIssuer.Create(
 		users[0].ID(),
 		auth.RefreshToken,
-		config.Get().Token.RefreshTokenDuration,
+		time.Minute,
 	)
 	expiredRrefreshToken, expiredRrefreshTokenPayload, _ := tokenIssuer.Create(
 		users[0].ID(),
