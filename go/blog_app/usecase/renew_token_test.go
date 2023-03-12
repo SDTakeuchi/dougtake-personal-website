@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"blog_app/adapter/config"
 	authimpl "blog_app/adapter/domain_impl/model/auth"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
