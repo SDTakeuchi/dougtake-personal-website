@@ -40,8 +40,8 @@ func (issuer *JWTIssuer) Create(
 	p := NewPayload(userID, tokenType, duration)
 	claims := ClaimsFromPayload(p)
 	token := jwt.NewWithClaims(jwtMethod, claims)
-	tokenString, err := token.SignedString([]byte(issuer.secretKey))
-	return tokenString, p, err
+	signedToken, err := token.SignedString([]byte(issuer.secretKey))
+	return signedToken, p, err
 }
 
 func (issuer *JWTIssuer) Verify(token string) (auth.Payload, error) {

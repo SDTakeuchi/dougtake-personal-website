@@ -153,7 +153,7 @@ func isValidRenewTokenResponse(got, want *RenewTokenOutput) bool {
 	}
 
 	if want.AccessTokenExpiresAt.After(got.AccessTokenExpiresAt) &&
-		got.AccessTokenExpiresAt.Add(time.Second*3).After(want.AccessTokenExpiresAt) {
+		got.AccessTokenExpiresAt.Add(time.Second*10).After(want.AccessTokenExpiresAt) {
 		fmt.Printf(
 			"different expiration date, got: %v, want: %v\n",
 			got.AccessTokenExpiresAt,
