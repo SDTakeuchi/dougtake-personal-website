@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"blog_app/domain/model"
 	"blog_app/domain/model/uuid"
+	"fmt"
 	"time"
 )
 
@@ -11,17 +13,24 @@ type Session interface {
 	UserID() uuid.UUID
 	RefreshToken() string
 	UserAgent() string
-	ClientIp() string
+	ClientIP() string
 	// IsBlocked()    bool
 	ExpiresAt() time.Time
 	CreatedAt() time.Time
 }
 
-// ID           uuid.UUID `json:"id"`
-// Username     string    `json:"username"`
-// RefreshToken string    `json:"refresh_token"`
-// UserAgent    string    `json:"user_agent"`
-// ClientIp     string    `json:"client_ip"`
-// IsBlocked    bool      `json:"is_blocked"`
-// ExpiresAt    time.Time `json:"expires_at"`
-// CreatedAt    time.Time `json:"created_at"`
+func ValidateSession(s Session) error {
+	if s.RefreshToken() == "" {
+		return fmt.Errorf(
+			"%w: session must have a refresh token string",
+			model.ErrConstructor,
+		)
+	}
+	if s.ExpiresAt().IsZero() {
+		return fmt.Errorf(
+			"%w: session must have expiration date",
+			model.ErrConstructor,
+		)
+	}
+	return nil
+}
