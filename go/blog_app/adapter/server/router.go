@@ -18,7 +18,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 		v1       = apiGroup.Group("/v1")
 	)
 
-	// authedRoutes := v1.Group("/").Use(middleware.IsLogedin(registry.TokenIssuer))
+	// authedRoutes := v1.Group("/").Use(middleware.CheckAuth(registry.TokenIssuer))
 
 	authGroup := v1.Group("/auth")
 	{
@@ -32,7 +32,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 		postGroup.GET("", postHandler.GetPosts)
 	}
 
-	commentGroup := v1.Group("/comments").Use(middleware.IsLogedin(registry.TokenIssuer))
+	commentGroup := v1.Group("/comments").Use(middleware.CheckAuth(registry.TokenIssuer))
 	{
 		commentGroup.POST("", commentHandler.CreateComment)
 		commentGroup.PUT("", commentHandler.UpdateComment)

@@ -16,7 +16,7 @@ const (
 	authorizationPayloadKey = "authorization_payload"
 )
 
-func IsLogedin(tokenIssuer auth.TokenIssuer) gin.HandlerFunc {
+func CheckAuth(tokenIssuer auth.TokenIssuer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorizationHeader := c.GetHeader(authorizationHeaderKey)
 
