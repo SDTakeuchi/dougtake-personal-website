@@ -13,16 +13,17 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
-    # front:
-    #     build: ./python
-    #     command:
-    #         python ./config/manage.py runserver 0.0.0.0:8000
-    #     volumes:
-    #         - ./python/:/app/
-    #     ports:
-    #         - 8000:8000
-    #     depends_on:
-    #         - db
+    front:
+        build: ./python
+        tty: true
+        # command:
+        #     python ./src/manage.py runserver 0.0.0.0:8000
+        volumes:
+            - ./python/app/:/app/
+        ports:
+            - 8000:8000
+        depends_on:
+            - api
 
     api:
         build:

@@ -1,7 +1,7 @@
 import requests
 import json
 from config import constants
-import utils
+from .. import utils
 
 def find_posts(post_id: int, tag_id: int, search_char: str, offset: int, limit: int) -> dict:
     if utils.is_empty(post_id):

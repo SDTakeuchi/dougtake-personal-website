@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from helpers import post, comment
+from .helpers import post, comment
 
 def post_index(request):
     arg = {
+        'post_id': request.GET.get('post_id'),
         'tag_id': request.GET.get('tag_id'),
         'search_char': request.GET.get('search_char'),
         'offset': request.GET.get('offset'),
@@ -19,7 +20,7 @@ def post_index(request):
     ctx = {
         'res': res,
     }
-    return render(request, 'index.html', ctx)
+    return render(request, 'templates/base.html', ctx)
 
 def post_detail(request):
     if post_id := request.GET.get('post_id') is None:
