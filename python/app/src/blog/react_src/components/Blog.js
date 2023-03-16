@@ -62,7 +62,7 @@ const posts = [post1, post2, post3];
 const sidebar = {
   title: 'About',
   description:
-    'Etiam porta sem malesuada magna mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.',
+    'Douglas Takeuchi is a software engineer based in Tokyo, Japan. (legal name; Shuhei Takeuchi/武内修平) Douglas started his career as a full-stack javascript/python engineer. Later he joined Kyash.inc as a back-end developer, where he worked on fintech domained micro-services in golang.',
   archives: [
     { title: 'March 2020', url: '#' },
     { title: 'February 2020', url: '#' },

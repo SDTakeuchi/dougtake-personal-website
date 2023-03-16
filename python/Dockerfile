@@ -26,7 +26,7 @@ RUN apt install -y curl \
 &&  . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION} \
 &&  node --version \
 &&  npm --version \
-&&  npm i @mui/material @mui/icons-material @emotion/styled @emotion/react markdown-to-jsx
+&&  npm i create-react-app @mui/material @mui/icons-material @emotion/styled @emotion/react markdown-to-jsx
 
 EXPOSE 8000
 

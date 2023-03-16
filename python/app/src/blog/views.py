@@ -20,7 +20,7 @@ def post_index(request):
     ctx = {
         'res': res,
     }
-    return render(request, 'templates/base.html', ctx)
+    return render(request, 'react/main/index.html', ctx)
 
 def post_detail(request):
     if post_id := request.GET.get('post_id') is None:
@@ -36,7 +36,7 @@ def post_detail(request):
     ctx = {
         'res': res,
     }
-    return render(request, 'detail.html', ctx)
+    return render(request, 'react/main/index.html', ctx)
 
 # def create_post(request):
 #     ctx = {}
@@ -65,7 +65,7 @@ def create_comment(request):
         'res': res,
     }
     # if post creation is done asyncronesly, html does not have to be returned.
-    return render(request, 'detail.html', ctx)
+    return render(request, 'react/main/index.html', ctx)
 
 # user
 
