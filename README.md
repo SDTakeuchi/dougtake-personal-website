@@ -1,14 +1,5 @@
-# dougtake personal web page
+# personal blog service [WIP]
 
-## functions
+Frontend: WIP
 
-### tech
-
-- blog CRUD
-- sending email to me
-
-### music blog
-
-- blog CRUD
-- sending email to me
-- purchace music
+Banckend: Golang (Clean Architecture)
