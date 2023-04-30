@@ -33,20 +33,19 @@ RUN apk update \
 &&  apk add --no-cache bash gcc musl-dev make curl tar \
 &&  rm -rf /var/lib/apt/lists/* \
 &&  export GO111MODULE=on \
+# migrate
+&&  curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz \
+&&  mv migrate.linux-amd64 $GOPATH/bin/migrate \
 # wire
 &&  go install github.com/google/wire/cmd/wire@latest \
 # mockgen
-&&  go install github.com/golang/mock/mockgen@latest \
-&&  go install github.com/golang/mock/gomock@latest \
-# migrate
-&&  curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz \
-&&  mv migrate.linux-amd64 $GOPATH/bin/migrate
+&&  go install github.com/golang/mock/mockgen@latest
+# &&  go install github.com/golang/mock/gomock@latest
 
 COPY ./blog_app/ .
-COPY ./blog_app/.env .
 
 RUN go mod tidy
 
 EXPOSE 8080
 
-# CMD ["./start.sh"]
+CMD ["./start.sh"]

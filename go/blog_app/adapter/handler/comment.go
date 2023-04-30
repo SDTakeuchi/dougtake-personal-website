@@ -10,10 +10,12 @@ type (
 	CommentHandler interface {
 		CreateComment(c *gin.Context)
 		UpdateComment(c *gin.Context)
+		DeleteComment(c *gin.Context)
 	}
 	commentHandler struct {
 		createCommentUsecase usecase.CreateComment
 		updateCommentUsecase usecase.UpdateComment
+		deleteCommentUsecase usecase.DeleteComment
 	}
 
 	createCommentRequest struct {
@@ -31,15 +33,23 @@ type (
 	updateCommentResponse struct {
 		ID uint64 `json:"id"`
 	}
+
+	deleteCommentRequest struct {
+		ID uint64 `form:"id" json:"id"`
+	}
+	deleteCommentResponse struct {
+	}
 )
 
 func NewCommentHandler(
 	createCommentUsecase usecase.CreateComment,
 	updateCommentResponse usecase.UpdateComment,
+	deleteCommentResponse usecase.DeleteComment,
 ) CommentHandler {
 	return &commentHandler{
 		createCommentUsecase,
 		updateCommentResponse,
+		deleteCommentResponse,
 	}
 }
 
@@ -90,5 +100,27 @@ func (h *commentHandler) UpdateComment(c *gin.Context) {
 		updateCommentResponse{
 			(*output).Comment.ID(),
 		},
+	)
+}
+
+func (h *commentHandler) DeleteComment(c *gin.Context) {
+	params := deleteCommentRequest{}
+	if err := c.Bind(&params); err != nil {
+		createErrResponse(c, errFailedToBindQuery)
+		return
+	}
+	_, err := h.deleteCommentUsecase.Execute(
+		c,
+		usecase.DeleteCommentInput{
+			ID: params.ID,
+		},
+	)
+	if err != nil {
+		createErrResponse(c, err)
+		return
+	}
+	createJSONResponse(
+		c,
+		deleteCommentResponse{},
 	)
 }

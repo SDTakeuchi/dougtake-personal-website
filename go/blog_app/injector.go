@@ -32,6 +32,7 @@ func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry
 		repository.NewCommentRepository,
 		usecase.NewCreateComment,
 		usecase.NewUpdateComment,
+		usecase.NewDeleteComment,
 		handler.NewCommentHandler,
 		// post
 		repository.NewPostRepository,
