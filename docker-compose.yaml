@@ -13,18 +13,6 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
-    front:
-        build: ./python
-        tty: true
-        # command:
-        #     python ./src/manage.py runserver 0.0.0.0:8000
-        volumes:
-            - ./python/app/:/app/
-        ports:
-            - 8000:8000
-        depends_on:
-            - api
-
     api:
         build:
             context: ./go
@@ -32,28 +20,39 @@ services:
         container_name: blog_go_api
         hostname: blog_go_api
         tty: true
+        environment:
+            - TZ=Asia/Tokyo
         ports:
             - "8080:8080"
-        environment:
-            - DB_HOST_NAME=blog_postgres
-            - DB_PORT=5432
-            - DB_USER_NAME=postgres
-            - DB_NAME=postgres
-            - DB_PASSWORD=postgres
-            - DB_SSL_MODE=disable
-            - POSTGRES_TIMEZONE=Asia/Tokyo
-            - DB_CONN_TIMEOUT=9
-            - DB_MAX_OPEN=0
-            - DB_MAX_IDLE=2
-            - DB_MAX_LIFE_TIME=0
-            - DEBUG=true
-            - GO_PORT=8080
-            - FRONTEND_HOST_NAME=blog_front
-            - FRONTEND_PORT=8000
         volumes:
             - ./go/blog_app:/go/src/app
         depends_on:
             - postgres
+
+    frontend:
+        build: ./node
+        container_name: blog_node_frontend
+        hostname: blog_node_frontend
+        volumes:
+            - ./node/productlog-nextjs-theme/:/usr/app/
+        command: yarn run dev
+        tty: true
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true
+        ports:
+            - "3000:3000"
+
+    nginx:
+        build: ./nginx
+        container_name: blog_nginx
+        hostname: nginx
+        environment:
+            - TZ=Asia/Tokyo
+        ports:
+            - "80:80"
+        depends_on:
+            - frontend
 
 volumes:
     postgres_data:
