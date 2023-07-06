@@ -28,12 +28,7 @@ func NewDeleteComment(
 }
 
 func (u *deleteCommentImpl) Execute(ctx context.Context, input DeleteCommentInput) (*DeleteCommentOutput, error) {
-	comment, err := u.commentRepo.Get(ctx, input.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = u.commentRepo.Delete(ctx, comment.ID())
+	err := u.commentRepo.Delete(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}
