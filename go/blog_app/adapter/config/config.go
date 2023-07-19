@@ -56,7 +56,7 @@ func Load() {
 	f, err := os.Open("config.yaml")
 	if err != nil {
 		log.Fatalf(
-			"load config fialed: os.Open err: %v",
+			"load config failed: os.Open err: %v",
 			err.Error(),
 		)
 	}
