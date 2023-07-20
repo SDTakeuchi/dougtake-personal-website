@@ -12,10 +12,10 @@ import (
 )
 
 func GenRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
-	var posts []model.Post
-	for i := 1; i < wantCount+1; i++ {
+	posts := make([]model.Post, wantCount)
+	for i := 0; i < wantCount; i++ {
 		p := postgres.Post{
-			ID:        uint64(i),
+			ID:        uint64(i + 1),
 			Title:     GenRandomChars(30),
 			Body:      GenRandomChars(2000),
 			UserID:    uuid.New(),
@@ -23,19 +23,19 @@ func GenRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
-		posts = append(posts, modelimpl.PostFromRecord(p))
+		posts[i] = modelimpl.PostFromRecord(p)
 	}
 	return posts
 }
 
 func GenRandomTags(wantCount int) []model.Tag {
-	var tags []model.Tag
-	for i := 1; i < wantCount+1; i++ {
+	tags := make([]model.Tag, wantCount)
+	for i := 0; i < wantCount; i++ {
 		t := postgres.Tag{
-			ID:   uint64(i),
+			ID:   uint64(i + 1),
 			Name: GenRandomChars(10),
 		}
-		tags = append(tags, modelimpl.TagFromRecord(t))
+		tags[i] = modelimpl.TagFromRecord(t)
 	}
 	return tags
 }
@@ -43,10 +43,10 @@ func GenRandomTags(wantCount int) []model.Tag {
 var SamplePassword = "a9#jL0s8hbFSiolk"
 
 func GenRandomUsers(wantCount int) []model.User {
-	var users []model.User
+	users := make([]model.User, wantCount)
 	samplePassword, _ := password.NewPassword(SamplePassword)
 	hashedPassword := samplePassword.HashedPassword()
-	for i := 1; i < wantCount+1; i++ {
+	for i := 0; i < wantCount; i++ {
 		email := fmt.Sprintf("%sABC@email.com", GenRandomChars(20))
 		u := postgres.User{
 			ID:       uuid.New(),
@@ -54,28 +54,28 @@ func GenRandomUsers(wantCount int) []model.User {
 			Email:    email,
 			Password: hashedPassword,
 		}
-		users = append(users, modelimpl.UserFromRecord(u))
+		users[i] = modelimpl.UserFromRecord(u)
 	}
 	return users
 }
 
 func GenRandomComments(wantCount int, postIDs []uint64) []model.Comment {
-	var comments []model.Comment
-	for i := 1; i < wantCount+1; i++ {
+	comments := make([]model.Comment, wantCount)
+	for i := 0; i < wantCount; i++ {
 
 		postID := len(postIDs)
 		if i < len(postIDs) {
-			postID = i
+			postID = i+1
 		}
 
 		pgC := postgres.Comment{
-			ID:        uint64(i),
+			ID:        uint64(i+1),
 			Body:      GenRandomChars(200),
 			PostID:    uint64(postID),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
-		comments = append(comments, modelimpl.CommentFromRecord(pgC))
+		comments[i] = modelimpl.CommentFromRecord(pgC)
 	}
 	return comments
 }
