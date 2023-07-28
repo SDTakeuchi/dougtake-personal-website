@@ -36,6 +36,7 @@ func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry
 		handler.NewCommentHandler,
 		// post
 		repository.NewPostRepository,
+		usecase.NewCreatePost,
 		usecase.NewFindPosts,
 		handler.NewPostHandler,
 		//registry

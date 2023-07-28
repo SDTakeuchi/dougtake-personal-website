@@ -4,6 +4,7 @@ import (
 	modelimpl "blog_app/adapter/domain_impl/model"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/domain/model"
+	"blog_app/domain/model/uuid"
 	"blog_app/domain/repository"
 	"context"
 )
@@ -27,6 +28,14 @@ func (r *userRepository) Create(ctx context.Context, user model.User) (model.Use
 func (r *userRepository) GetByEmail(ctx context.Context, email string) (model.User, error) {
 	var pUser postgres.User
 	if err := r.db.Conn.WithContext(ctx).Where("email = ?", email).Take(&pUser).Error; err != nil {
+		return nil, err
+	}
+	return modelimpl.UserFromRecord(pUser), nil
+}
+
+func (r *userRepository) GetByID(ctx context.Context, id uuid.UUID) (model.User, error) {
+	var pUser postgres.User
+	if err := r.db.Conn.WithContext(ctx).Where("id = ?", id.String()).Take(&pUser).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.UserFromRecord(pUser), nil

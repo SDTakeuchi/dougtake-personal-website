@@ -9,17 +9,23 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 func GenRandomPosts(wantCount int, tagIDs []uint64) []model.Post {
 	posts := make([]model.Post, wantCount)
+	tagIDsInt64 := make([]int64, len(tagIDs))
+	for i, v := range tagIDs {
+		tagIDsInt64[i] = int64(v)
+	}
 	for i := 0; i < wantCount; i++ {
 		p := postgres.Post{
 			ID:        uint64(i + 1),
 			Title:     GenRandomChars(30),
 			Body:      GenRandomChars(2000),
 			UserID:    uuid.New(),
-			TagIDs:    tagIDs,
+			TagIDs:    pq.Int64Array(tagIDsInt64),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
@@ -65,11 +71,11 @@ func GenRandomComments(wantCount int, postIDs []uint64) []model.Comment {
 
 		postID := len(postIDs)
 		if i < len(postIDs) {
-			postID = i+1
+			postID = i + 1
 		}
 
 		pgC := postgres.Comment{
-			ID:        uint64(i+1),
+			ID:        uint64(i + 1),
 			Body:      GenRandomChars(200),
 			PostID:    uint64(postID),
 			CreatedAt: time.Now(),

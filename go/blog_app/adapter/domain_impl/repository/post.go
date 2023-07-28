@@ -20,7 +20,7 @@ func NewPostRepository(db *postgres.DB) repository.Post {
 
 func (r *postRepository) Create(ctx context.Context, post model.Post) (model.Post, error) {
 	pPost := modelimpl.PostToRecord(post)
-	if err := r.db.Conn.WithContext(ctx).Create(&pPost).Error; err != nil {
+	if err := r.db.Conn.WithContext(ctx).Table("posts").Create(&pPost).Error; err != nil {
 		return nil, err
 	}
 	return modelimpl.PostFromRecord(pPost), nil

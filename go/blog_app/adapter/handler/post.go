@@ -9,10 +9,23 @@ import (
 type (
 	PostHandler interface {
 		GetPosts(c *gin.Context)
+		CreatePost(c *gin.Context)
 	}
 	postHandler struct {
-		findPostsUsecase usecase.FindPosts
+		createPostUsecase usecase.CreatePost
+		findPostsUsecase  usecase.FindPosts
 	}
+
+	createPostRequest struct {
+		UserID string   `json:"user_id"`
+		Title  string   `json:"title"`
+		Body   string   `json:"body"`
+		TagIDs []uint64 `json:"tag_ids"`
+	}
+	createPostResponse struct {
+		ID uint64 `json:"post_id"`
+	}
+
 	getPostsRequest struct {
 		ID         uint64 `form:"id"`
 		TagID      uint64 `form:"tag_id"`
@@ -26,8 +39,42 @@ type (
 	}
 )
 
-func NewPostHandler(findPostsUsecase usecase.FindPosts) PostHandler {
-	return &postHandler{findPostsUsecase}
+func NewPostHandler(
+	findPostsUsecase usecase.FindPosts,
+	createPostUsecase usecase.CreatePost,
+) PostHandler {
+	return &postHandler{
+		createPostUsecase: createPostUsecase,
+		findPostsUsecase:  findPostsUsecase,
+	}
+}
+
+func (h *postHandler) CreatePost(c *gin.Context) {
+	params := createPostRequest{}
+	if err := c.Bind(&params); err != nil {
+		createErrResponse(c, errFailedToBindQuery)
+		return
+	}
+
+	output, err := h.createPostUsecase.Execute(
+		c,
+		usecase.CreatePostInput{
+			UserID: params.UserID,
+			Title:  params.Title,
+			Body:   params.Body,
+			TagIDs: params.TagIDs,
+		},
+	)
+	if err != nil {
+		createErrResponse(c, err)
+		return
+	}
+	createJSONResponse(
+		c,
+		createPostResponse{
+			output.Post.ID(),
+		},
+	)
 }
 
 func (h *postHandler) GetPosts(c *gin.Context) {

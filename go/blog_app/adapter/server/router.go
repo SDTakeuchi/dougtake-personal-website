@@ -30,6 +30,7 @@ func SetupRouter(engine *gin.Engine, registry registry.Registry) {
 	postGroup := v1.Group("/posts")
 	{
 		postGroup.GET("", postHandler.GetPosts)
+		postGroup.POST("", postHandler.CreatePost)
 	}
 
 	commentGroup := v1.Group("/comments").Use(middleware.CheckAuth(registry.TokenIssuer))
