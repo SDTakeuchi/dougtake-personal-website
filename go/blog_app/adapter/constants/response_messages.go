@@ -1,5 +1,10 @@
 package constants
 
+import (
+	"blog_app/domain/model/password"
+	"fmt"
+)
+
 type ResponseMessage string
 
 var (
@@ -7,7 +12,7 @@ var (
 	InvalidToken         ResponseMessage = "token is invalid"
 	ExpiredToken         ResponseMessage = "token is already expired"
 
-	PasswordTooShort  ResponseMessage = "password must be at least 8 characters"
+	PasswordTooShort  ResponseMessage = ResponseMessage(fmt.Sprintf("password must be at least %d characters", password.MinPasswordLength))
 	IncorrectPassword ResponseMessage = "incorrect password"
 
 	DefaultErrorMessage ResponseMessage = "unexpected error has occurred: contact to the owner"
