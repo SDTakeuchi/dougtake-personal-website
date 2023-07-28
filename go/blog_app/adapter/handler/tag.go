@@ -13,6 +13,7 @@ type (
 	tagHandler struct {
 		getTagsUsecase usecase.GetTags
 	}
+
 	getTagsRequest struct {
 		IDs []uint64 `form:"ids"`
 	}

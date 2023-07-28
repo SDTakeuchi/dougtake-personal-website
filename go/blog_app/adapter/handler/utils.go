@@ -24,7 +24,6 @@ func createErrResponse(c *gin.Context, err error) {
 	var (
 		statusCode int
 		msg        constants.ResponseMessage
-		res        gin.H
 	)
 
 	switch err {
@@ -58,6 +57,7 @@ func createErrResponse(c *gin.Context, err error) {
 	}
 
 	isDebug := config.Get().Debug
+	var res gin.H
 	if isDebug {
 		// logger.Debug(err.Error())
 		res = gin.H{"message": msg.String() + ": === DEBUG === :" + err.Error()}

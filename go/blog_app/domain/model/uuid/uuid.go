@@ -19,5 +19,5 @@ func New() UUID {
 
 func Parse(uuidString string) (UUID, error) {
 	u, err := uuid.Parse(uuidString)
-	return UUID{u}, err
+	return UUID{UUID: u}, err
 }

@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS sessions (
 ALTER TABLE
     "sessions"
 ADD
-    FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id");

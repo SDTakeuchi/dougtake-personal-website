@@ -6,6 +6,7 @@ package mock_repository
 
 import (
 	model "blog_app/domain/model"
+	uuid "blog_app/domain/model/uuid"
 	context "context"
 	reflect "reflect"
 
@@ -63,4 +64,19 @@ func (m *MockUser) GetByEmail(ctx context.Context, email string) (model.User, er
 func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), ctx, email)
+}
+
+// GetByID mocks base method.
+func (m *MockUser) GetByID(ctx context.Context, id uuid.UUID) (model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", ctx, id)
+	ret0, _ := ret[0].(model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockUserMockRecorder) GetByID(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockUser)(nil).GetByID), ctx, id)
 }

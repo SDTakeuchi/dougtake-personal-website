@@ -7,6 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const MinPasswordLength = 8
+
 var (
 	ErrPasswordTooShort  = errors.New("password must be at least 8 characters")
 	ErrIncorrectPassword = errors.New("wrong password")
@@ -20,10 +22,10 @@ type Password struct {
 // String() is an alias for Password.HashedPassword()
 func (p Password) String() string { return p.HashedPassword() }
 
-func (p *Password) HashedPassword() string { return p.hashedPassword }
+func (p Password) HashedPassword() string { return p.hashedPassword }
 
 func validatePassword(p string) error {
-	if len(p) < 8 {
+	if len(p) < MinPasswordLength {
 		return ErrPasswordTooShort
 	}
 	return nil

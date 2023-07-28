@@ -25,7 +25,7 @@ func NewJWTIssuer(secretKey string) (auth.TokenIssuer, error) {
 	if len(secretKey) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
 	}
-	return &JWTIssuer{secretKey}, nil
+	return &JWTIssuer{secretKey: secretKey}, nil
 }
 
 func (issuer *JWTIssuer) Create(
@@ -37,11 +37,11 @@ func (issuer *JWTIssuer) Create(
 	if duration == time.Duration(0) {
 		duration = time.Minute
 	}
-	p := NewPayload(userID, tokenType, duration)
-	claims := ClaimsFromPayload(p)
+	payload := NewPayload(userID, tokenType, duration)
+	claims := ClaimsFromPayload(payload)
 	token := jwt.NewWithClaims(jwtMethod, claims)
 	signedToken, err := token.SignedString([]byte(issuer.secretKey))
-	return signedToken, p, err
+	return signedToken, payload, err
 }
 
 func (issuer *JWTIssuer) Verify(token string) (auth.Payload, error) {
@@ -53,7 +53,11 @@ func (issuer *JWTIssuer) Verify(token string) (auth.Payload, error) {
 		return []byte(issuer.secretKey), nil
 	}
 
-	parsedToken, err := jwt.Parse(token, keyFunc)
+	parsedToken, err := jwt.Parse(
+		token,
+		keyFunc,
+		jwt.WithValidMethods([]string{"HS256"}),
+	)
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			return nil, auth.ErrExpiredToken
