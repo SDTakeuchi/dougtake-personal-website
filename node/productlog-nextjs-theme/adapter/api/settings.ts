@@ -17,17 +17,6 @@ class Endpoint {
     }
 }
 
-class CustomRequest {
-    toJSON(): string {
-        const keys = Object.keys(this);
-        const json: any = {};
-        for (const key of keys) {
-            json[key] = this[key];
-        }
-        return JSON.stringify(json);
-    }
-}
-
 const apiRoot: string = 'http://localhost/api/';
 
 const endpoints: Array<Endpoint> = [

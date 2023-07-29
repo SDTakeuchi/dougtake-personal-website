@@ -1,5 +1,16 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
+class CustomRequest {
+    toJSON(): string {
+        const keys = Object.keys(this);
+        const json: any = {};
+        for (const key of keys) {
+            json[key] = this[key];
+        }
+        return JSON.stringify(json);
+    }
+}
+
 class apiClient {
     timeout: number;
 
