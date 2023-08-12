@@ -1,6 +1,6 @@
 module blog_app
 
-go 1.18
+go 1.21
 
 require (
 	github.com/gin-gonic/gin v1.8.2

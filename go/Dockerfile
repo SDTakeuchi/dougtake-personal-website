@@ -1,5 +1,5 @@
 # 1st stage build for prod env
-FROM golang:1.19-alpine as builder
+FROM golang:1.21-alpine as builder
 
 WORKDIR /go/src/app
 
@@ -25,7 +25,7 @@ ENTRYPOINT [ "/go_app" ]
 
 
 # dev env; live reload enabled
-FROM golang:1.19-alpine as dev
+FROM golang:1.21-alpine as dev
 
 WORKDIR /go/src/app
 
