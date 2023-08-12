@@ -1,8 +1,7 @@
-class createCommentResponse {
-    
-}
+import { CustomRequest } from './client';
 
-class createCommentRequest extends CustomRequest {
+
+class CreateCommentRequest extends CustomRequest {
     body: string;
 
     constructor(body: string) {
@@ -12,7 +11,7 @@ class createCommentRequest extends CustomRequest {
 }
 
 
-class deleteCommentRequest extends CustomRequest {
+class DeleteCommentRequest extends CustomRequest {
     id: number;
 
     constructor(id: number) {
