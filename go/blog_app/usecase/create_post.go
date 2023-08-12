@@ -71,5 +71,5 @@ func (u *createPostImpl) Execute(ctx context.Context, input CreatePostInput) (*C
 	if err != nil {
 		return nil, err
 	}
-	return &CreatePostOutput{post}, nil
+	return &CreatePostOutput{Post: post}, nil
 }
