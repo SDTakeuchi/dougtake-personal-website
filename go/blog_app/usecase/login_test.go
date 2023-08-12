@@ -2,6 +2,7 @@ package usecase
 
 import (
 	authimpl "blog_app/adapter/domain_impl/model/auth"
+	"blog_app/adapter/log"
 	"blog_app/domain/model/auth"
 	mockrepo "blog_app/domain/repository/mock"
 	testutil "blog_app/util/test"
@@ -22,6 +23,7 @@ func Test_loginImpl_Execute(t *testing.T) {
 
 	randomUsers := testutil.GenRandomUsers(3)
 	tokenIssuer, _ := authimpl.NewJWTIssuer("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+	logger := log.NewLogger()
 
 	tests := []struct {
 		name              string
@@ -118,7 +120,7 @@ func Test_loginImpl_Execute(t *testing.T) {
 			mockSession := mockrepo.NewMockSession(ctrl)
 			tt.buildStubsSession(mockSession)
 
-			login := NewLogin(tt.tokenIssuer, mockUser, mockSession)
+			login := NewLogin(tt.tokenIssuer, mockUser, mockSession, logger)
 
 			got, err := login.Execute(tt.args.ctx, tt.args.input)
 

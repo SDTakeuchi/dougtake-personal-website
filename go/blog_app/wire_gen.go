@@ -9,6 +9,7 @@ package main
 import (
 	"blog_app/adapter/domain_impl/repository"
 	"blog_app/adapter/handler"
+	"blog_app/adapter/log"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/adapter/registry"
 	"blog_app/domain/model/auth"
@@ -17,10 +18,10 @@ import (
 
 // Injectors from injector.go:
 
-func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry {
+func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer, logger log.Logger) registry.Registry {
 	user := repository.NewUserRepository(db)
 	session := repository.NewSessionRepository(db)
-	login := usecase.NewLogin(tokenIssuer, user, session)
+	login := usecase.NewLogin(tokenIssuer, user, session, logger)
 	signup := usecase.NewSignup(user)
 	renewToken := usecase.NewRenewToken(tokenIssuer, session)
 	authHandler := handler.NewAuthHandler(login, signup, renewToken)

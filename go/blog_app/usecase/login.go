@@ -3,6 +3,7 @@ package usecase
 import (
 	"blog_app/adapter/config"
 	authmodel "blog_app/adapter/domain_impl/model/auth"
+	"blog_app/adapter/log"
 	"blog_app/domain/model/auth"
 	"blog_app/domain/model/password"
 	"blog_app/domain/model/uuid"
@@ -29,6 +30,7 @@ type (
 		UserID                uuid.UUID
 	}
 	loginImpl struct {
+		logger      log.Logger
 		tokenIssuer auth.TokenIssuer
 		userRepo    repository.User
 		sessionRepo repository.Session
@@ -39,11 +41,13 @@ func NewLogin(
 	tokenIssuer auth.TokenIssuer,
 	userRepo repository.User,
 	sessionRepo repository.Session,
+	logger log.Logger,
 ) Login {
 	return &loginImpl{
 		tokenIssuer: tokenIssuer,
 		userRepo:    userRepo,
 		sessionRepo: sessionRepo,
+		logger:      logger,
 	}
 }
 
@@ -61,6 +65,7 @@ func (u *loginImpl) Execute(ctx context.Context, input LoginInput) (*LoginOutput
 		user.Password().String(),
 		input.RawPassword,
 	); err != nil {
+		u.logger.Warnf("password not match for user: %s", user.ID().String())
 		return nil, err
 	}
 	// issue token

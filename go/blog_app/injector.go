@@ -6,6 +6,7 @@ package main
 import (
 	"blog_app/adapter/domain_impl/repository"
 	"blog_app/adapter/handler"
+	"blog_app/adapter/log"
 	"blog_app/adapter/persistance/database/postgres"
 	"blog_app/adapter/registry"
 	"blog_app/domain/model/auth"
@@ -14,7 +15,7 @@ import (
 	"github.com/google/wire"
 )
 
-func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer) registry.Registry {
+func initialize(db *postgres.DB, tokenIssuer auth.TokenIssuer, logger log.Logger) registry.Registry {
 	wire.Build(
 		// user
 		repository.NewUserRepository,
